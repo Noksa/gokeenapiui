@@ -64,6 +64,7 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 				createdInterface, err := gokeenrestapi.AwgConf.AddInterface(v, "")
 				if err != nil {
 					dialog.ShowInformation("Ошибка создания соединения", err.Error(), mainWindow)
+					errorProcess(err)
 					return
 				}
 				fyne.Do(func() {
@@ -73,16 +74,19 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 				err = gokeenrestapi.AwgConf.ConfigureOrUpdateInterface(v, createdInterface.Created)
 				if err != nil {
 					dialog.ShowInformation("Ошибка настройки соединения", err.Error(), mainWindow)
+					errorProcess(err)
 					return
 				}
 				err = gokeenrestapi.Interface.SetGlobalIpInInterface(createdInterface.Created, true)
 				if err != nil {
 					dialog.ShowInformation("Ошибка настройки IP соединения", err.Error(), mainWindow)
+					errorProcess(err)
 					return
 				}
 				err = gokeenrestapi.Interface.UpInterface(createdInterface.Created)
 				if err != nil {
 					dialog.ShowInformation("Ошибка включения соединения", err.Error(), mainWindow)
+					errorProcess(err)
 					return
 				}
 				fyne.Do(func() {
@@ -91,6 +95,7 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 				err = gokeenrestapi.Interface.WaitUntilInterfaceIsUp(createdInterface.Created)
 				if err != nil {
 					dialog.ShowInformation("Соединение с сервером не установлено", err.Error(), mainWindow)
+					errorProcess(err)
 					return
 				}
 				quitButton := widget.NewButton("Выход", func() {
@@ -152,4 +157,13 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 		HintText: "",
 	})
 	return creater(f)
+}
+
+func errorProcess(err error) {
+	if err == nil {
+		return
+	}
+	fyne.Do(func() {
+		mainWindow.SetContent(container.NewVBox(widget.NewLabel(fmt.Sprintf("Произошла ошибка! Попробуйте снова :(\n\nОшибка: %v", err.Error()))))
+	})
 }

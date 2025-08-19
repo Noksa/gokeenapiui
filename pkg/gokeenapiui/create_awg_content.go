@@ -56,7 +56,7 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 			}
 			err = gokeenrestapi.Checks.CheckAWGInterfaceExistsFromConfFile(v)
 			if err != nil {
-				dialog.ShowInformation("Такое соединение уже существует", err.Error(), mainWindow)
+				dialog.ShowInformation("Ошибка чтения conf файла", err.Error(), mainWindow)
 				return
 			}
 			mainWindow.SetContent(ProgressBar("Создаём соединение..."))
@@ -105,11 +105,14 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 				})
 			}()
 		}
-		c := container.NewVBox(widget.NewLabel(`==> 🛜 <==
+		c := container.NewVBox(widget.NewLabel(`==> 🛜
 Для добавления и настройки нового AWG соединения в keenetic роутере введите данные ниже
 Если Ваш keenetic роутер находится в локальной сети (Вы подключены к его Wi-Fi сети),
-то к нему можно обратиться по внутреннему IP адреса и http протоколу.
-Если роутер доступен через интернет, к нему можно обратиться через KeenDNS имя и https протокол`),
+то к нему можно обратиться по внутреннему IP адресу и HTTP протоколу.
+Если роутер доступен через интернет, к нему можно обратиться через KeenDNS имя и HTTPS протокол
+Примеры:
+Внутренний адрес: http://192.168.1.1
+Внешний адрес: https://super-keenetic.keenetic.pro`),
 			form)
 		return c
 	}
@@ -137,6 +140,10 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 		}
 
 	}, mainWindow)
+	d.SetTitleText("Выбор AWG конфиг файла")
+	d.SetDismissText("Отмена")
+	d.SetConfirmText("Выбрать")
+	d.Resize(fyne.NewSize(800, 600))
 	f.AppendItem(&widget.FormItem{
 		Text: AwgFileConf,
 		Widget: widget.NewButtonWithIcon("Выбрать файл", theme.FolderOpenIcon(), func() {

@@ -31,3 +31,4 @@ fyne-cross
 Icon.png
 .idea
 .vscode
+fyne_metadata_init.go

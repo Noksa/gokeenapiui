@@ -16,10 +16,8 @@ var (
 )
 
 func WelcomeWindow() fyne.Window {
-	myApp := app.NewWithID(uuid.New().String())
-	myApp.SetIcon(theme.ComputerIcon())
+	_ = app.NewWithID(uuid.New().String())
 	mainWindow = fyne.CurrentApp().NewWindow("Gokeenapi")
-	mainWindow.SetIcon(theme.ComputerIcon())
 	mainWindow.CenterOnScreen()
 	exitButton := widget.NewButton("Выход", func() {
 		fyne.CurrentApp().Quit()

@@ -46,9 +46,7 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 				return
 			}
 			v, _ := Bindings.AwgConfFile.Get()
-			if v == "" {
-
-			}
+			connectionName, _ := Bindings.AwgName.Get()
 			err := gokeenrestapi.Auth()
 			if err != nil {
 				dialog.ShowInformation("Ошибка авторизации", err.Error(), mainWindow)
@@ -61,7 +59,7 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 			}
 			mainWindow.SetContent(ProgressBar("Создаём соединение..."))
 			go func() {
-				createdInterface, err := gokeenrestapi.AwgConf.AddInterface(v, "")
+				createdInterface, err := gokeenrestapi.AwgConf.AddInterface(v, connectionName)
 				if err != nil {
 					dialog.ShowInformation("Ошибка создания соединения", err.Error(), mainWindow)
 					errorProcess(err)
@@ -104,9 +102,9 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 				fyne.Do(func() {
 					p, _ := url.Parse(fmt.Sprintf("%v/otherConnections", viper.Get(config.ViperKeeneticUrl)))
 					mainWindow.SetContent(container.NewVBox(
-						widget.NewLabel(fmt.Sprintf("Соединение успешно создано и включено!\nID созданного соединения: %v\nТеперь можно приступить к настройке политик подключения или маршрутизации и наслаждаться VPN! Удачи! 🌐", createdInterface.Created)),
+						widget.NewLabel(fmt.Sprintf("Соединение успешно создано и включено!\nID созданного соединения: %v\nТеперь можно приступить к настройке политик подключения или маршрутизации и наслаждаться VPN!\nУдачи! 🌐", createdInterface.Created)),
 						widget.NewHyperlink("Открыть веб-интерфейс роутера", p),
-						container.NewBorder(nil, nil, nil, quitButton)))
+						container.NewBorder(nil, nil, quitButton, nil, quitButton)))
 				})
 			}()
 		}
@@ -122,7 +120,11 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 		return c
 	}
 	f := Forms.RouterUrlLoginPassword()
-	d := dialog.NewFileOpen(func(reader fyne.URIReadCloser, err error) {
+	var d *dialog.FileDialog
+	repickFileButton := widget.NewButtonWithIcon("Выбрать другой файл", theme.UploadIcon(), func() {
+		d.Show()
+	})
+	d = dialog.NewFileOpen(func(reader fyne.URIReadCloser, err error) {
 		if err != nil {
 			return
 		}
@@ -136,11 +138,13 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 		if p != "" {
 			_ = Bindings.AwgConfFile.Set(p)
 			f = Forms.RouterUrlLoginPassword()
+			addAwgNameField(f)
 			f.AppendItem(&widget.FormItem{
 				Text:     AwgFileConf,
 				Widget:   widget.NewLabel(p),
 				HintText: "Файл выбран",
 			})
+			f.Append("", repickFileButton)
 			mainWindow.SetContent(creater(f))
 		}
 
@@ -149,6 +153,7 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 	d.SetDismissText("Отмена")
 	d.SetConfirmText("Выбрать")
 	d.Resize(fyne.NewSize(800, 600))
+	addAwgNameField(f)
 	f.AppendItem(&widget.FormItem{
 		Text: AwgFileConf,
 		Widget: widget.NewButtonWithIcon("Выбрать файл", theme.FolderOpenIcon(), func() {
@@ -157,6 +162,14 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 		HintText: "",
 	})
 	return creater(f)
+}
+
+func addAwgNameField(f *widget.Form) {
+	f.AppendItem(&widget.FormItem{
+		Text:     "Имя соед.",
+		Widget:   widget.NewEntryWithData(Bindings.AwgName),
+		HintText: "Имя создаваемого соединения. Опционально, по умолчанию равно имени файла",
+	})
 }
 
 func errorProcess(err error) {

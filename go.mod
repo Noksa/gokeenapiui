@@ -5,7 +5,7 @@ go 1.24
 require (
 	fyne.io/fyne/v2 v2.6.2
 	github.com/google/uuid v1.6.0
-	github.com/noksa/gokeenapi v0.2.1-0.20250819135433-0c91696bbb8f
+	github.com/noksa/gokeenapi v0.2.1
 	github.com/spf13/viper v1.20.1
 	go.uber.org/multierr v1.11.0
 )

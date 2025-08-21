@@ -80,6 +80,8 @@ github.com/noksa/gokeenapi v0.2.0 h1:lOHbDHd8/S77F8xQ9FX93rbv9MmG4PRN/sQn+V3e86s
 github.com/noksa/gokeenapi v0.2.0/go.mod h1:rJihSLl3VyV1GJirjA3XdeehKVrhque4BjP+Byfq1h8=
 github.com/noksa/gokeenapi v0.2.1-0.20250819135433-0c91696bbb8f h1:VTLQLwahUYT7QMO7j+aAM25XBY3LHEE4zcFrbyOvT1Q=
 github.com/noksa/gokeenapi v0.2.1-0.20250819135433-0c91696bbb8f/go.mod h1:2OFTcFULjaF4NvJvtXCI351fwRW8O75is2LNsRxazXM=
+github.com/noksa/gokeenapi v0.2.1 h1:Vytyx1f+lGIkaz9B0a8Mti3X62wGpBcyy3JhiENqsns=
+github.com/noksa/gokeenapi v0.2.1/go.mod h1:2OFTcFULjaF4NvJvtXCI351fwRW8O75is2LNsRxazXM=
 github.com/pelletier/go-toml/v2 v2.2.3 h1:YmeHyLY8mFWbdkNWwpr+qIL2bEqT0o95WSdkNHvL12M=
 github.com/pelletier/go-toml/v2 v2.2.3/go.mod h1:MfCQTFTvCcUyyvvwm1+G6H/jORL20Xlb6rzQu9GuUkc=
 github.com/pkg/profile v1.7.0 h1:hnbDkaNWPCLMO9wGLdBFTIZvzDrDfBM2072E1S9gJkA=

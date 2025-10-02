@@ -10,7 +10,6 @@ help: ## Show help
 
 .PHONY: binaries
 binaries: ## Make binaries
-	@rm -rf fyne-cross
-	@rm -rf tmp-pkg
-	@fyne-cross windows --arch "amd64" --app-id "goneenapi.noksa.windows" "$(ROOT_DIR)"
+	@rm -rf build/bin
+	@wails build -platform windows/amd64
 #	@fyne-cross linux --arch "amd64,arm64" --app-id "goneenapi.noksa.linux" "$(ROOT_DIR)"

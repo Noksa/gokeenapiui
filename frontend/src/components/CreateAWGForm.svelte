@@ -12,19 +12,27 @@
     'back': void;
   }>();
 
+  let nameManuallySet = false;
+
   async function selectAWGFile() {
     try {
       const result = await OpenFileDialog();
       
       if (result) {
         awgConfig.filePath = result;
-        // Extract filename for connection name
-        const filename = result.split('/').pop()?.replace('.conf', '') || '';
-        awgConfig.name = filename;
+        // Extract filename for connection name only if not manually set
+        if (!nameManuallySet) {
+          const filename = result.split('/').pop()?.replace('.conf', '') || '';
+          awgConfig.name = filename;
+        }
       }
     } catch (error) {
       console.error('Error selecting file:', error);
     }
+  }
+
+  function handleNameInput() {
+    nameManuallySet = true;
   }
 
   function handleSubmit() {
@@ -108,7 +116,7 @@
     </div>
 
     <div class="form-section">
-      <h3>🔒 Настройка VPN</h3>
+      <h3>🔒 Настройка AWG</h3>
       
       <div class="form-group">
         <label for="connection-name">
@@ -119,6 +127,7 @@
           id="connection-name"
           type="text" 
           bind:value={awgConfig.name}
+          on:input={handleNameInput}
           placeholder="Имя соединения (по умолчанию - имя файла)"
         />
       </div>
@@ -202,25 +211,40 @@
     display: inline-block;
     cursor: help;
     margin-left: 8px;
+    background: rgba(255, 193, 7, 0.2);
+    border-radius: 50%;
+    padding: 4px;
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
+    animation: glow 2s ease-in-out infinite alternate;
   }
 
   .info-icon {
     font-size: 1.1em;
-    opacity: 0.8;
-    transition: all 0.3s ease;
     display: inline-block;
-    animation: pulse 2s ease-in-out infinite;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 3px rgba(255, 193, 7, 0.8));
   }
 
   .info-icon:hover {
-    opacity: 1;
-    transform: scale(1.2);
-    animation: none;
+    transform: scale(1.3);
+    filter: drop-shadow(0 0 8px rgba(255, 193, 7, 1));
   }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 0.8; }
-    50% { opacity: 1; }
+  .info-tooltip:hover {
+    animation: none;
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.6);
+    background: rgba(255, 193, 7, 0.3);
+  }
+
+  @keyframes glow {
+    0% { 
+      box-shadow: 0 0 5px rgba(255, 193, 7, 0.3);
+      background: rgba(255, 193, 7, 0.1);
+    }
+    100% { 
+      box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
+      background: rgba(255, 193, 7, 0.25);
+    }
   }
 
   .tooltip-content {
@@ -231,12 +255,13 @@
     left: 50%;
     transform: translateX(-50%);
     background: rgba(42, 82, 152, 0.95);
-    color: white;
+    color: whitesmoke;
     padding: 15px;
     border-radius: 8px;
     font-size: 0.9em;
     line-height: 1.4;
-    white-space: nowrap;
+    white-space: normal;
+    width: 500px;
     z-index: 1000;
     margin-top: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);

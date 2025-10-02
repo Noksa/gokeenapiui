@@ -1,4 +1,4 @@
-module gokeenapuui-wails
+module gokeenapiui
 
 go 1.24
 

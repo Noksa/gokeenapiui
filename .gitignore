@@ -15,8 +15,9 @@ frontend/.vite/
 
 # Build artifacts
 *.exe
-gokeenapuui-wails
+gokeenapiui
 *.app
 
 # Package lock checksums
 frontend/package.json.md5
+q.log

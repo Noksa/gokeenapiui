@@ -13,6 +13,9 @@
 
   $: isSuccess = type === 'success';
   $: title = isSuccess ? '✅ Успех!' : '❌ Ошибка';
+  
+  // Remove ANSI escape codes from error messages
+  $: cleanMessage = message.replace(/\x1b\[[0-9;]*m/g, '');
 </script>
 
 <div class="result-container {type}">
@@ -27,7 +30,7 @@
   <h2>{title}</h2>
   
   {#if isSuccess}
-    <p class="result-message">{message}</p>
+    <p class="result-message">{cleanMessage}</p>
     <div class="button-group">
       <button class="btn primary glow" on:click={() => dispatch('open-router')}>
         <span class="btn-icon">🌐</span>
@@ -38,7 +41,7 @@
       </button>
     </div>
   {:else}
-    <p class="error-message">{message}</p>
+    <p class="error-message">{cleanMessage}</p>
     <div class="button-group">
       <button class="btn primary pulse" on:click={() => dispatch('retry')}>
         <span class="btn-icon">🔄</span>
@@ -142,9 +145,11 @@
     padding: 20px;
     border-radius: 12px;
     border-left: 4px solid #dc3545;
-    font-family: monospace;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: 0.9em;
     word-break: break-word;
+    white-space: pre-wrap;
+    line-height: 1.5;
     margin-bottom: 30px;
     animation: errorGlow 2s ease-in-out infinite alternate;
   }

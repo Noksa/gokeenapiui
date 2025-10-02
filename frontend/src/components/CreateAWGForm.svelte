@@ -143,15 +143,18 @@
               <span class="file-icon">📄</span>
               <span class="file-path">{awgConfig.filePath}</span>
             </div>
-            <button type="button" id="awg-file-btn" class="btn secondary small" on:click={selectAWGFile}>
+            <button type="button" id="awg-file-btn" class="btn network file-btn small" on:click={selectAWGFile}>
+              <span class="btn-icon">📁</span>
               Выбрать другой файл
             </button>
           </div>
         {:else}
-          <button type="button" id="awg-file-btn" class="btn network file-btn" on:click={selectAWGFile}>
-            <span class="btn-icon">📁</span>
-            Выбрать файл
-          </button>
+          <div class="file-btn-container">
+            <button type="button" id="awg-file-btn" class="btn network file-btn" on:click={selectAWGFile}>
+              <span class="btn-icon">📁</span>
+              Выбрать файл
+            </button>
+          </div>
         {/if}
       </div>
     </div>
@@ -307,7 +310,7 @@
   h3 {
     color: #2a5298;
     font-size: 1.1em;
-    margin-bottom: 15px;
+    margin: 0 0 15px 0;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -373,12 +376,16 @@
 
   .file-selected {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 10px;
     padding: 15px;
     background: rgba(42, 82, 152, 0.05);
     border-radius: 10px;
     border: 2px solid rgba(42, 82, 152, 0.2);
+  }
+
+  .file-selected .btn {
+    align-self: flex-start;
   }
 
   .file-info {
@@ -394,21 +401,32 @@
 
   .file-path {
     font-family: 'Monaco', 'Menlo', monospace;
-    font-size: 0.9em;
+    font-size: 0.75em;
     color: #2a5298;
     word-break: break-all;
   }
 
+  .file-btn-container {
+    display: flex;
+    justify-content: flex-start;
+  }
+
   .file-btn {
-    width: 100%;
+    width: auto;
     justify-content: center;
+  }
+
+  .file-btn.small {
+    font-size: 0.85em;
+    padding: 8px 16px;
+    opacity: 0.8;
   }
 
   .button-group {
     display: flex;
     gap: 20px;
     justify-content: center;
-    margin-top: 40px;
+    margin-top: 10px;
   }
 
   .btn {

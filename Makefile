@@ -12,4 +12,5 @@ help: ## Show help
 binaries: ## Make binaries
 	@rm -rf build/bin
 	@wails build -platform windows/amd64
+	@wails build -platform darwin/arm64
 #	@fyne-cross linux --arch "amd64,arm64" --app-id "goneenapi.noksa.linux" "$(ROOT_DIR)"

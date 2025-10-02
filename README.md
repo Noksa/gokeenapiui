@@ -1,16 +1,20 @@
-# README
+# Gokeenapi UI
 
-## About
+A graphical user interface for creating AWG (AmneziaWG) connections on Keenetic routers.
 
-This is the official Wails Svelte-TS template.
+This project is a GUI version of the [gokeenapi](https://github.com/Noksa/gokeenapi) utility.
 
-## Live Development
+## Description
 
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
+The application allows you to easily configure AWG VPN connections on Keenetic routers through a convenient graphical interface. Supports connection to both local routers and via the internet using KeenDNS.
 
-## Building
+## Features
 
-To build a redistributable, production mode package, use `wails build`.
+- 🌐 Connect to router via HTTP/HTTPS
+- 📄 Load AWG configuration files
+- ⚡ Automatic VPN connection creation
+- 🔒 Secure authentication
+- 💡 Intuitive interface with tooltips
+- ✅ Input field validation
+- 🎨 Modern design with animations
+

@@ -12,7 +12,6 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/noksa/gokeenapi/pkg/config"
 	"github.com/noksa/gokeenapi/pkg/gokeenrestapi"
-	"github.com/spf13/viper"
 	"go.uber.org/multierr"
 )
 
@@ -47,7 +46,7 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 			}
 			v, _ := Bindings.AwgConfFile.Get()
 			connectionName, _ := Bindings.AwgName.Get()
-			err := gokeenrestapi.Auth()
+			err := gokeenrestapi.Common.Auth()
 			if err != nil {
 				dialog.ShowInformation("Ошибка авторизации", err.Error(), mainWindow)
 				return
@@ -100,7 +99,7 @@ func (*containers) CreateAwgContainer() *fyne.Container {
 					fyne.CurrentApp().Quit()
 				})
 				fyne.Do(func() {
-					p, _ := url.Parse(fmt.Sprintf("%v/otherConnections", viper.Get(config.ViperKeeneticUrl)))
+					p, _ := url.Parse(fmt.Sprintf("%v/otherConnections", config.Cfg.Keenetic.URL))
 					mainWindow.SetContent(container.NewVBox(
 						widget.NewLabel(fmt.Sprintf("Соединение успешно создано и включено!\nID созданного соединения: %v\nТеперь можно приступить к настройке политик подключения или маршрутизации и наслаждаться VPN!\nУдачи! 🌐", createdInterface.Created)),
 						widget.NewHyperlink("Открыть веб-интерфейс роутера", p),

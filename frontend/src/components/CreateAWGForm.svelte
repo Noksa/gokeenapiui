@@ -13,6 +13,12 @@
   }>();
 
   let nameManuallySet = false;
+  let fieldErrors = {
+    url: false,
+    login: false,
+    password: false,
+    filePath: false
+  };
 
   async function selectAWGFile() {
     try {
@@ -20,6 +26,7 @@
       
       if (result) {
         awgConfig.filePath = result;
+        clearFieldError('filePath');
         // Extract filename for connection name only if not manually set
         if (!nameManuallySet) {
           const filename = result.split('/').pop()?.replace('.conf', '') || '';
@@ -35,7 +42,41 @@
     nameManuallySet = true;
   }
 
+  function clearFieldError(field: keyof typeof fieldErrors) {
+    fieldErrors[field] = false;
+  }
+
   function handleSubmit() {
+    // Сброс ошибок
+    fieldErrors = {
+      url: false,
+      login: false,
+      password: false,
+      filePath: false
+    };
+    
+    // Проверка обязательных полей
+    let hasErrors = false;
+    
+    if (!routerConfig.url.trim()) {
+      fieldErrors.url = true;
+      hasErrors = true;
+    }
+    if (!routerConfig.login.trim()) {
+      fieldErrors.login = true;
+      hasErrors = true;
+    }
+    if (!routerConfig.password.trim()) {
+      fieldErrors.password = true;
+      hasErrors = true;
+    }
+    if (!awgConfig.filePath.trim()) {
+      fieldErrors.filePath = true;
+      hasErrors = true;
+    }
+    
+    if (hasErrors) return;
+    
     dispatch('submit');
   }
 </script>
@@ -79,8 +120,9 @@
           id="router-url"
           type="text" 
           bind:value={routerConfig.url}
+          on:input={() => clearFieldError('url')}
           placeholder="IP или DNS имя (протокол http/https) роутера"
-          required
+          class:error={fieldErrors.url}
         />
       </div>
       
@@ -94,8 +136,9 @@
             id="router-login"
             type="text" 
             bind:value={routerConfig.login}
+            on:input={() => clearFieldError('login')}
             placeholder="Логин администратора"
-            required
+            class:error={fieldErrors.login}
           />
         </div>
         
@@ -108,8 +151,9 @@
             id="router-password"
             type="password" 
             bind:value={routerConfig.password}
+            on:input={() => clearFieldError('password')}
             placeholder="Пароль администратора"
-            required
+            class:error={fieldErrors.password}
           />
         </div>
       </div>
@@ -132,7 +176,7 @@
         />
       </div>
       
-      <div class="form-group">
+      <div class="form-group" class:error={fieldErrors.filePath}>
         <label for="awg-file-btn">
           <span class="label-icon">📄</span>
           AWG конфигурационный файл
@@ -420,6 +464,29 @@
     font-size: 0.85em;
     padding: 8px 16px;
     opacity: 0.8;
+  }
+
+  input.error {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+  }
+
+  .form-group.error {
+    border: 2px solid #dc3545;
+    border-radius: 8px;
+    padding: 10px;
+    background: rgba(220, 53, 69, 0.05);
+  }
+
+  .validation-error {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid #dc3545;
+    margin: 15px 0;
+    font-size: 0.9em;
+    text-align: center;
   }
 
   .button-group {

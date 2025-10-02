@@ -1,5 +1,12 @@
 <script lang="ts">
-  import { CreateAWGConnection, ValidateRouterConfig, GetRouterWebURL } from '../wailsjs/go/main/App.js';
+  import { 
+    ValidateRouterConfig, 
+    ValidateAWGConfig, 
+    CreateAWGInterface, 
+    ConfigureAWGInterface, 
+    ActivateAWGInterface, 
+    GetRouterWebURL 
+  } from '../wailsjs/go/main/App.js';
   import { BrowserOpenURL, Quit } from '../wailsjs/runtime';
   
   import Welcome from './components/Welcome.svelte';
@@ -45,14 +52,31 @@
         throw new Error('Выберите AWG конфиг файл');
       }
       
+      appState = setProgress(appState, 'Проверяем подключение к роутеру...');
+      
       // Validate router config
       await ValidateRouterConfig(appState.routerConfig);
       
-      appState = setProgress(appState, 'Создаём соединение...');
+      appState = setProgress(appState, 'Проверяем AWG конфигурацию...');
       
-      // Create AWG connection
-      await CreateAWGConnection(appState.routerConfig, appState.awgConfig);
+      // Validate AWG config and authenticate
+      await ValidateAWGConfig(appState.routerConfig, appState.awgConfig);
       
+      appState = setProgress(appState, 'Создаём AWG интерфейс...');
+      
+      // Create AWG interface
+      const interfaceName = await CreateAWGInterface(appState.awgConfig);
+      
+      appState = setProgress(appState, 'Настраиваем соединение...');
+      
+      // Configure AWG interface
+      await ConfigureAWGInterface(appState.awgConfig, interfaceName);
+      
+      appState = setProgress(appState, 'Активируем соединение...');
+      
+      // Activate AWG interface
+      await ActivateAWGInterface(interfaceName);
+        
       // Success
       appState = setSuccess(
         appState, 
@@ -101,7 +125,6 @@
     <Result 
       type="success"
       message={appState.successMessage}
-      routerUrl={appState.routerConfig.url}
       on:open-router={openRouterInterface}
       on:quit={quit}
     />

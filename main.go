@@ -19,7 +19,7 @@ func main() {
 	err := wails.Run(&options.App{
 		Title:  "Gokeenapi GUI",
 		Width:  800,
-		Height: 600,
+		Height: 850,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

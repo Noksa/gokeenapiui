@@ -80,8 +80,8 @@ func (a *App) ValidateRouterConfig(routerConfig RouterConfig) error {
 	return mErr
 }
 
-// CreateAWGConnection creates a new AWG connection
-func (a *App) CreateAWGConnection(routerConfig RouterConfig, awgConfig AWGConfig) error {
+// ValidateAWGConfig validates AWG configuration and authenticates
+func (a *App) ValidateAWGConfig(routerConfig RouterConfig, awgConfig AWGConfig) error {
 	// Set configuration
 	config.Cfg.Keenetic.URL = routerConfig.URL
 	config.Cfg.Keenetic.Login = routerConfig.Login
@@ -102,30 +102,45 @@ func (a *App) CreateAWGConnection(routerConfig RouterConfig, awgConfig AWGConfig
 		return fmt.Errorf("ошибка чтения conf файла: %w", err)
 	}
 
+	return nil
+}
+
+// CreateAWGInterface creates AWG interface
+func (a *App) CreateAWGInterface(awgConfig AWGConfig) (string, error) {
 	// Create interface
 	createdInterface, err := gokeenrestapi.AwgConf.AddInterface(awgConfig.FilePath, awgConfig.Name)
 	if err != nil {
-		return fmt.Errorf("ошибка создания соединения: %w", err)
+		return "", fmt.Errorf("ошибка создания соединения: %w", err)
 	}
 
+	return createdInterface.Created, nil
+}
+
+// ConfigureAWGInterface configures the created AWG interface
+func (a *App) ConfigureAWGInterface(awgConfig AWGConfig, interfaceName string) error {
 	// Configure interface
 	time.Sleep(time.Second * 1)
-	if err := gokeenrestapi.AwgConf.ConfigureOrUpdateInterface(awgConfig.FilePath, createdInterface.Created); err != nil {
+	if err := gokeenrestapi.AwgConf.ConfigureOrUpdateInterface(awgConfig.FilePath, interfaceName); err != nil {
 		return fmt.Errorf("ошибка настройки соединения: %w", err)
 	}
 
 	// Set global IP
-	if err := gokeenrestapi.Interface.SetGlobalIpInInterface(createdInterface.Created, true); err != nil {
+	if err := gokeenrestapi.Interface.SetGlobalIpInInterface(interfaceName, true); err != nil {
 		return fmt.Errorf("ошибка настройки IP соединения: %w", err)
 	}
 
+	return nil
+}
+
+// ActivateAWGInterface brings the interface up and waits for it to be ready
+func (a *App) ActivateAWGInterface(interfaceName string) error {
 	// Bring interface up
-	if err := gokeenrestapi.Interface.UpInterface(createdInterface.Created); err != nil {
+	if err := gokeenrestapi.Interface.UpInterface(interfaceName); err != nil {
 		return fmt.Errorf("ошибка включения соединения: %w", err)
 	}
 
 	// Wait for interface to be up
-	if err := gokeenrestapi.Interface.WaitUntilInterfaceIsUp(createdInterface.Created); err != nil {
+	if err := gokeenrestapi.Interface.WaitUntilInterfaceIsUp(interfaceName); err != nil {
 		return fmt.Errorf("соединение с сервером не установлено: %w", err)
 	}
 

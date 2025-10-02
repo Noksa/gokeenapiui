@@ -1,10 +1,15 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
+  import { BrowserOpenURL } from '../../wailsjs/runtime/runtime';
   
   const dispatch = createEventDispatcher<{
     'create-awg': void;
     'quit': void;
   }>();
+
+  function openGithubLink() {
+    BrowserOpenURL('https://github.com/Noksa/gokeenapi');
+  }
 </script>
 
 <div class="welcome-container">
@@ -21,7 +26,7 @@
     Утилита для работы с роутерами Keenetic через REST API<br><br>
     (!) Данная версия является GUI версией и содержит не весь функционал<br><br>
     Если Вам нужен весь функционал, воспользуйтесь 
-    <a href="https://github.com/Noksa/gokeenapi" target="_blank">CLI версией</a>
+    <button type="button" class="link-button" on:click={openGithubLink}>CLI версией</button>
   </p>
   
   <div class="button-group">
@@ -127,18 +132,6 @@
     left: 100%;
   }
 
-  a {
-    color: #2a5298;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s;
-  }
-
-  a:hover {
-    color: #1e3c72;
-    text-decoration: underline;
-  }
-
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-10px); }
@@ -147,5 +140,19 @@
   @keyframes pulse {
     0% { opacity: 0.6; }
     100% { opacity: 1; }
+  }
+
+  .link-button {
+    background: none;
+    border: none;
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+  }
+
+  .link-button:hover {
+    color: #0056b3;
   }
 </style>

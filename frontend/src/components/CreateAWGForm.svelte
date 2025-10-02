@@ -18,11 +18,9 @@
       
       if (result) {
         awgConfig.filePath = result;
-        // Extract filename for default connection name if not set
-        if (!awgConfig.name) {
-          const filename = result.split('/').pop()?.replace('.conf', '') || '';
-          awgConfig.name = filename;
-        }
+        // Extract filename for connection name
+        const filename = result.split('/').pop()?.replace('.conf', '') || '';
+        awgConfig.name = filename;
       }
     } catch (error) {
       console.error('Error selecting file:', error);
@@ -125,7 +123,7 @@
       </div>
       
       <div class="form-group">
-        <label>
+        <label for="awg-file-btn">
           <span class="label-icon">📄</span>
           AWG конфигурационный файл
         </label>
@@ -135,12 +133,12 @@
               <span class="file-icon">📄</span>
               <span class="file-path">{awgConfig.filePath}</span>
             </div>
-            <button type="button" class="btn secondary small" on:click={selectAWGFile}>
+            <button type="button" id="awg-file-btn" class="btn secondary small" on:click={selectAWGFile}>
               Выбрать другой файл
             </button>
           </div>
         {:else}
-          <button type="button" class="btn network file-btn" on:click={selectAWGFile}>
+          <button type="button" id="awg-file-btn" class="btn network file-btn" on:click={selectAWGFile}>
             <span class="btn-icon">📁</span>
             Выбрать файл
           </button>
@@ -222,6 +220,7 @@
     border-left: 4px solid #2a5298;
     margin-bottom: 30px;
     line-height: 1.6;
+    font-size: 0.8em;
   }
 
   code {

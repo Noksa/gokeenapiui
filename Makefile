@@ -12,5 +12,5 @@ help: ## Show help
 binaries: ## Make binaries
 	@rm -rf fyne-cross
 	@rm -rf tmp-pkg
-	@fyne-cross windows --arch "amd64,arm64" --app-id "goneenapi.noksa.windows" "$(ROOT_DIR)"
+	@fyne-cross windows --arch "amd64" --app-id "goneenapi.noksa.windows" "$(ROOT_DIR)"
 #	@fyne-cross linux --arch "amd64,arm64" --app-id "goneenapi.noksa.linux" "$(ROOT_DIR)"

@@ -1,16 +1,20 @@
-## A GUI for [gokeenapi](https://github.com/Noksa/gokeenapi) CLI utility
+# Gokeenapi UI
 
-#### Important notes
+A graphical user interface for creating AWG (AmneziaWG) connections on Keenetic routers.
 
----
+This project is a GUI version of the [gokeenapi](https://github.com/Noksa/gokeenapi) utility.
 
-GUI is not actively developed and maintained.
+## Description
 
-Due to that fact, GUI version doesn't contain all functionality as `gokeenapi` CLI has.
+The application allows you to easily configure AWG VPN connections on Keenetic routers through a convenient graphical interface. Supports connection to both local routers and via the internet using KeenDNS.
 
-Consider using the CLI version if you need everything.
+## Features
 
-Supported functionality in GUI:
-* Add AWG connections 
-
+- 🌐 Connect to router via HTTP/HTTPS
+- 📄 Load AWG configuration files
+- ⚡ Automatic VPN connection creation
+- 🔒 Secure authentication
+- 💡 Intuitive interface with tooltips
+- ✅ Input field validation
+- 🎨 Modern design with animations
 

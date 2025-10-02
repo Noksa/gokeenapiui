@@ -34,7 +34,7 @@
         Открыть веб-интерфейс роутера
       </button>
       <button class="btn secondary" on:click={() => dispatch('quit')}>
-        Выход
+        Назад
       </button>
     </div>
   {:else}

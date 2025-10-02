@@ -47,19 +47,20 @@
     <h2>🛜 Создание AWG соединения</h2>
   </div>
   
-  <p class="form-description">
-    Для добавления и настройки нового AWG соединения в keenetic роутере введите данные ниже.<br>
-    Если Ваш keenetic роутер находится в локальной сети (Вы подключены к его Wi-Fi сети),
-    то к нему можно обратиться по внутреннему IP адресу и HTTP протоколу.<br>
-    Если роутер доступен через интернет, к нему можно обратиться через KeenDNS имя и HTTPS протокол<br><br>
-    <strong>Примеры:</strong><br>
-    Внутренний адрес: <code>http://192.168.1.1</code><br>
-    Внешний адрес: <code>https://super-keenetic.keenetic.pro</code>
-  </p>
-  
   <form on:submit|preventDefault={handleSubmit}>
     <div class="form-section">
-      <h3>🌐 Доступ к роутеру</h3>
+      <h3>🌐 Доступ к роутеру 
+        <div class="info-tooltip">
+          <span class="info-icon">💡</span>
+          <div class="tooltip-content">
+            <strong>Примеры подключения:</strong><br>
+            Внутренний адрес: <code>http://192.168.1.1</code><br>
+            Внешний адрес: <code>https://super-keenetic.keenetic.pro</code><br><br>
+            Если роутер в локальной сети - используйте HTTP и внутренний IP.<br>
+            Если через интернет - используйте HTTPS и KeenDNS имя.
+          </div>
+        </div>
+      </h3>
       
       <div class="form-group">
         <label for="router-url">
@@ -118,7 +119,7 @@
           id="connection-name"
           type="text" 
           bind:value={awgConfig.name}
-          placeholder="Имя создаваемого соединения. Опционально, по умолчанию равно имени файла"
+          placeholder="Имя соединения (по умолчанию - имя файла)"
         />
       </div>
       
@@ -154,7 +155,7 @@
       </button>
       <button type="button" class="btn secondary" on:click={() => dispatch('back')}>
         <span class="btn-icon">↩️</span>
-        Выход
+        Назад
       </button>
     </div>
   </form>
@@ -165,7 +166,7 @@
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-radius: 20px;
-    padding: 50px;
+    padding: 30px;
     box-shadow: 
       0 20px 40px rgba(0, 0, 0, 0.3),
       0 0 0 1px rgba(255, 255, 255, 0.2);
@@ -188,7 +189,81 @@
 
   .form-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+
+  .info-tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+    margin-left: 8px;
+  }
+
+  .info-icon {
+    font-size: 1.1em;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .info-icon:hover {
+    opacity: 1;
+    transform: scale(1.2);
+    animation: none;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+  }
+
+  .tooltip-content {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(42, 82, 152, 0.95);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    line-height: 1.4;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-top: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+
+  .tooltip-content::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom-color: rgba(42, 82, 152, 0.95);
+  }
+
+  .info-tooltip:hover .tooltip-content {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .tooltip-content code {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 0.85em;
   }
 
   .router-icon {
@@ -200,27 +275,17 @@
   h2 {
     color: #1e3c72;
     margin: 0;
-    font-size: 2.2em;
-    font-weight: 700;
+    font-size: 1.4em;
+    font-weight: 600;
   }
 
   h3 {
     color: #2a5298;
-    font-size: 1.3em;
-    margin-bottom: 20px;
+    font-size: 1.1em;
+    margin-bottom: 15px;
     display: flex;
     align-items: center;
     gap: 10px;
-  }
-
-  .form-description {
-    background: linear-gradient(135deg, rgba(42, 82, 152, 0.1), rgba(30, 60, 114, 0.05));
-    padding: 20px;
-    border-radius: 12px;
-    border-left: 4px solid #2a5298;
-    margin-bottom: 30px;
-    line-height: 1.6;
-    font-size: 0.8em;
   }
 
   code {
@@ -232,8 +297,8 @@
   }
 
   .form-section {
-    margin-bottom: 35px;
-    padding: 25px;
+    margin-bottom: 25px;
+    padding: 20px;
     background: rgba(255, 255, 255, 0.5);
     border-radius: 15px;
     border: 1px solid rgba(42, 82, 152, 0.1);
@@ -242,21 +307,21 @@
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 15px;
   }
 
   .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
 
   label {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: 6px;
+    margin-bottom: 6px;
     font-weight: 600;
     color: #2a5298;
-    font-size: 1.05em;
+    font-size: 0.9em;
   }
 
   .label-icon {
@@ -265,10 +330,10 @@
 
   input {
     width: 100%;
-    padding: 14px 16px;
+    padding: 10px 12px;
     border: 2px solid rgba(42, 82, 152, 0.2);
-    border-radius: 10px;
-    font-size: 16px;
+    border-radius: 8px;
+    font-size: 14px;
     transition: all 0.3s;
     box-sizing: border-box;
     background: rgba(255, 255, 255, 0.9);

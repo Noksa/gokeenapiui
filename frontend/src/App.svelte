@@ -102,7 +102,7 @@
   }
 </script>
 
-<main>
+<main class:center-content={appState.currentView === 'progress' || appState.currentView === 'success' || appState.currentView === 'error'}>
   {#if appState.currentView === 'welcome'}
     <Welcome 
       on:create-awg={showCreateAWG}
@@ -140,13 +140,15 @@
 </main>
 
 <style>
-  :global(body) {
+  :global(html, body) {
     margin: 0;
     padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #0f2027 100%);
-    min-height: 100vh;
-    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
   }
 
   :global(body::before) {
@@ -165,10 +167,16 @@
   }
 
   main {
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 20px;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  main.center-content {
+    align-items: center;
   }
 </style>

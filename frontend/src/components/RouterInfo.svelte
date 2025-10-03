@@ -34,7 +34,7 @@
     bottom: 20px;
     left: 20px;
     cursor: help;
-    z-index: 10;
+    z-index: 100;
   }
 
   .router-icon-container {

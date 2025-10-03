@@ -2,9 +2,12 @@
   import { createEventDispatcher } from 'svelte';
   import { BrowserOpenURL } from '../../wailsjs/runtime/runtime';
   
+  export let isRouterConnected: boolean = false;
+  
   const dispatch = createEventDispatcher<{
     'create-awg': void;
     'add-routes': void;
+    'reconnect-router': void;
     'quit': void;
   }>();
 
@@ -41,6 +44,14 @@
       Управление маршрутами
       <div class="btn-glow"></div>
     </button>
+    
+    {#if isRouterConnected}
+      <button class="btn secondary reconnect-btn" on:click={() => dispatch('reconnect-router')}>
+        <span class="btn-icon">🔌</span>
+        Переподключиться к роутеру
+      </button>
+    {/if}
+    
     <button class="btn secondary" on:click={() => dispatch('quit')}>
       <span class="btn-icon">🚪</span>
       Выход

@@ -9,7 +9,7 @@
     'retry': void;
     'back': void;
     'open-router': { path: string };
-    'quit': void;
+    'home': void;
   }>();
 
   $: isSuccess = type === 'success';
@@ -37,8 +37,9 @@
         <span class="btn-icon">🌐</span>
         Открыть веб-интерфейс роутера
       </button>
-      <button class="btn secondary" on:click={() => dispatch('quit')}>
-        Выйти
+      <button class="btn secondary" on:click={() => dispatch('home')}>
+        <span class="btn-icon">🏠</span>
+        На главную
       </button>
     </div>
   {:else}

@@ -12,7 +12,7 @@
       {title}
     </h3>
   {/if}
-  
+
   <slot />
 </div>
 

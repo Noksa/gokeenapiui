@@ -36,10 +36,14 @@
   let appState: AppState = createInitialState();
 
   // Navigation handlers
-  let pendingAction: 'create-awg' | 'manage-routes' | null = null;
+  let pendingAction: 'create-awg' | 'manage-routes' | 'reconnect' | null = null;
 
   function showCreateAWG() {
-    pendingAction = 'create-awg';
+    if (appState.isRouterConnected) {
+      appState = updateView(appState, 'create-awg');
+    } else {
+      pendingAction = 'create-awg';
+    }
   }
 
   function retryCreateAWG() {
@@ -63,10 +67,16 @@
   }
 
   function showAddRoutes() {
-    pendingAction = 'manage-routes';
+    if (appState.isRouterConnected) {
+      appState = updateView(appState, 'add-routes');
+    } else {
+      pendingAction = 'manage-routes';
+    }
   }
 
   function handleRouterAccessProceed() {
+    appState = { ...appState, isRouterConnected: true };
+    
     if (pendingAction === 'create-awg') {
       appState = updateView(appState, 'create-awg');
     } else if (pendingAction === 'manage-routes') {
@@ -79,8 +89,12 @@
     pendingAction = null;
   }
 
+  function showRouterModal() {
+    pendingAction = 'reconnect';
+  }
+
   function showWelcome() {
-    appState = resetState();
+    appState = { ...appState, currentView: 'welcome' };
   }
 
   // Main business logic
@@ -224,8 +238,10 @@
 <main class:center-content={appState.currentView === 'progress' || appState.currentView === 'success' || appState.currentView === 'error'}>
   {#if appState.currentView === 'welcome'}
     <Welcome 
+      isRouterConnected={appState.isRouterConnected}
       on:create-awg={showCreateAWG}
       on:add-routes={showAddRoutes}
+      on:reconnect-router={showRouterModal}
       on:quit={quit}
     />
   
@@ -257,7 +273,7 @@
       message={appState.successMessage}
       routerPath={appState.lastAction === 'add-routes' ? 'staticRoutes' : 'otherConnections'}
       on:open-router={(e) => openRouterInterface(e.detail.path)}
-      on:quit={quit}
+      on:home={showWelcome}
     />
   
   {:else if appState.currentView === 'error'}
@@ -265,15 +281,15 @@
       type="error"
       message={appState.errorMessage}
       on:retry={handleRetry}
-      on:back={showWelcome}
+      on:home={showWelcome}
     />
   {/if}
 
   {#if pendingAction}
     <RouterAccessModal
       bind:routerConfig={appState.routerConfig}
-      actionTitle={pendingAction === 'create-awg' ? 'Создание AWG соединения' : 'Управление маршрутами'}
-      actionIcon={pendingAction === 'create-awg' ? '🛜' : '🛣️'}
+      actionTitle={pendingAction === 'create-awg' ? 'Создание AWG соединения' : pendingAction === 'manage-routes' ? 'Управление маршрутами' : 'Переподключение к роутеру'}
+      actionIcon={pendingAction === 'create-awg' ? '🛜' : pendingAction === 'manage-routes' ? '🛣️' : '🔌'}
       on:proceed={handleRouterAccessProceed}
       on:cancel={handleRouterAccessCancel}
     />

@@ -11,7 +11,8 @@ export function createInitialState(): AppState {
     errorMessage: '',
     successMessage: '',
     isProcessing: false,
-    lastAction: null
+    lastAction: null,
+    isRouterConnected: false
   };
 }
 

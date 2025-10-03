@@ -145,10 +145,9 @@
           </button>
         </div>
       </form>
-      
-      <RouterInfo routerUrl={routerConfig.url} />
     </div>
   {/if}
+    <RouterInfo routerUrl={routerConfig.url} />
 </div>
 
 {#if showConfirmDialog}

@@ -27,6 +27,7 @@ export interface AppState {
   successMessage: string;
   isProcessing: boolean;
   lastAction: 'create-awg' | 'add-routes' | null;
+  isRouterConnected: boolean;
 }
 
 export const DEFAULT_ROUTER_CONFIG: RouterConfig = {

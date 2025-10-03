@@ -3,7 +3,7 @@ module gokeenapiui
 go 1.24
 
 require (
-	github.com/noksa/gokeenapi v1.1.1-0.20251002163520-85d2dd1d07a8
+	github.com/noksa/gokeenapi v1.1.1-0.20251003180605-ac8eb5343add
 	github.com/wailsapp/wails/v2 v2.10.2
 	go.uber.org/multierr v1.11.0
 )

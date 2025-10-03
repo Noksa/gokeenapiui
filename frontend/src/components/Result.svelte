@@ -49,8 +49,9 @@
         <span class="btn-icon">🔄</span>
         Попробовать снова
       </button>
-      <button class="btn secondary" on:click={() => dispatch('back')}>
-        Назад
+      <button class="btn secondary" on:click={() => dispatch('home')}>
+        <span class="btn-icon">🏠</span>
+        На главную
       </button>
     </div>
   {/if}

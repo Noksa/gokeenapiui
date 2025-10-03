@@ -21,6 +21,7 @@ type App struct {
 type WgInterface struct {
 	Id          string
 	Description string
+	Type        string
 }
 
 // RouterConfig holds router connection data
@@ -215,15 +216,22 @@ func (a *App) ConfigureAWGInterface(awgConfig AWGConfig, interfaceName string) e
 
 func (a *App) ShowWgInterfaces() ([]WgInterface, error) {
 	var ifaces []WgInterface
-	interfaces, err := gokeenrestapi.Interface.GetInterfacesViaRciShowInterfaces(false, "Wireguard")
+	interfaces, err := gokeenrestapi.Interface.GetInterfacesViaRciShowInterfaces(false)
 	if err != nil {
 		return nil, err
 	}
 	for _, iface := range interfaces {
-		ifaces = append(ifaces, WgInterface{
-			Id:          iface.Id,
-			Description: iface.Description,
-		})
+		if iface.Type == "Wireguard" || iface.DefaultGw {
+			t := "Wireguard"
+			if iface.DefaultGw {
+				t = "Основной"
+			}
+			ifaces = append(ifaces, WgInterface{
+				Id:          iface.Id,
+				Description: iface.Description,
+				Type:        t,
+			})
+		}
 	}
 	sort.SliceStable(ifaces, func(i, j int) bool {
 		return ifaces[i].Id < ifaces[j].Id

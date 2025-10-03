@@ -24,20 +24,22 @@
   
   <form on:submit|preventDefault>
     <div class="form-content">
-      <h2>Список WG интерфейсов</h2>
+      <h2>Список интерфейсов</h2>
       
       <div class="info-block">
         <div class="info-header">
           <span class="info-icon">📡</span>
-          <span class="info-title">WireGuard интерфейсы роутера</span>
+          <span class="info-title">Что здесь видно</span>
         </div>
         <div class="info-content">
-          Просмотр всех WireGuard интерфейсов, настроенных на роутере. Здесь отображаются ID интерфейсов и их описания.
+            На этой странице представлены все WireGuard интерфейсы, настроенные на роутере.<br>
+            Так же в этом списке присутствует основной интерфейс, через который происходит соединение с провайдером.<br>
+            Здесь отображаются ID интерфейсов и их описания.
         </div>
       </div>
     </div>
     
-    <FormSection title={`Интерфейсы WireGuard (${interfaces.length})`} icon="🔧">
+    <FormSection title={`Интерфейсы (${interfaces.length})`} icon="🔧">
       {#if isLoading}
         <div class="loading-state">
           <span class="loading-icon">⏳</span>
@@ -68,6 +70,10 @@
                     <span class="field-label">Описание:</span>
                     <span class="interface-description">{iface.Description || 'Без описания'}</span>
                   </div>
+                    <div class="interface-field">
+                        <span class="field-label">Тип:</span>
+                        <span class="interface-description">{iface.Type || 'Без типа'}</span>
+                    </div>
                 </div>
               </div>
             </div>

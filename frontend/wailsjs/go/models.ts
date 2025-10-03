@@ -49,6 +49,7 @@ export namespace main {
 	export class WgInterface {
 	    Id: string;
 	    Description: string;
+	    Type: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new WgInterface(source);
@@ -58,6 +59,7 @@ export namespace main {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.Id = source["Id"];
 	        this.Description = source["Description"];
+	        this.Type = source["Type"];
 	    }
 	}
 

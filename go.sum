@@ -44,8 +44,8 @@ github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWE
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e h1:fD57ERR4JtEqsWbfPhv4DMiApHyliiK5xCTNVSPiaAs=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
-github.com/noksa/gokeenapi v1.1.1-0.20251002163520-85d2dd1d07a8 h1:uA8GLZRAPZmpHsJFga6F2Ue1zTE2hXkLApXr5cnbrF4=
-github.com/noksa/gokeenapi v1.1.1-0.20251002163520-85d2dd1d07a8/go.mod h1:Z+dm/FiuREhP4XxBNvw/HqT+BESxq/pt6i8CpiOxExo=
+github.com/noksa/gokeenapi v1.1.1-0.20251003180605-ac8eb5343add h1:wfwPskvyolhNPUCUPlWN5UvIoEWdxlYCuVBrPyXBvhE=
+github.com/noksa/gokeenapi v1.1.1-0.20251003180605-ac8eb5343add/go.mod h1:Z+dm/FiuREhP4XxBNvw/HqT+BESxq/pt6i8CpiOxExo=
 github.com/patrickmn/go-cache v2.1.0+incompatible h1:HRMgzkcYKYpi3C8ajMPV8OFXaaRUnok+kx1WdO15EQc=
 github.com/patrickmn/go-cache v2.1.0+incompatible/go.mod h1:3Qf8kWWT7OJRJbdiICTKqZju1ZixQ/KpMGzzAfe6+WQ=
 github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c h1:+mdjkGKdHQG3305AYmdv1U2eRNDiU2ErMBj1gwrq8eQ=

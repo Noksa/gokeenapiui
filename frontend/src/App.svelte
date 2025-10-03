@@ -38,7 +38,6 @@
   let interfaces: any[] = [];
   let isLoadingInterfaces = false;
   let interfacesError = '';
-  let lastRouterUrl = '';
 
   async function loadInterfaces() {
     if (!appState.routerConfig.url || !appState.routerConfig.login || !appState.routerConfig.password) return;
@@ -49,7 +48,6 @@
     try {
       const { ShowWgInterfaces } = await import('../wailsjs/go/main/App.js');
       interfaces = await ShowWgInterfaces();
-      lastRouterUrl = appState.routerConfig.url;
     } catch (err) {
       console.error('Ошибка загрузки интерфейсов:', err);
       interfacesError = err instanceof Error ? err.message : 'Ошибка загрузки интерфейсов';
@@ -57,11 +55,6 @@
     } finally {
       isLoadingInterfaces = false;
     }
-  }
-
-  // Загружаем интерфейсы только при смене роутера или первом подключении
-  $: if (appState.isRouterConnected && appState.routerConfig.url && appState.routerConfig.url !== lastRouterUrl) {
-    loadInterfaces();
   }
 
   // Navigation handlers
@@ -113,6 +106,9 @@
 
   function handleRouterAccessProceed() {
     appState = { ...appState, isRouterConnected: true };
+    
+    // Загружаем интерфейсы после успешного подключения
+    loadInterfaces();
     
     if (pendingAction === 'create-awg') {
       appState = updateView(appState, 'create-awg');
@@ -178,6 +174,11 @@
 
       // Activate AWG interface
       await ActivateAWGInterface(interfaceName);
+      
+      appState = setProgress(appState, 'Обновляем список интерфейсов...');
+      
+      // Update interfaces list
+      await loadInterfaces();
         
       // Success
       appState = setSuccess(

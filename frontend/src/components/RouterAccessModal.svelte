@@ -85,9 +85,9 @@
   <div class="modal-content" on:click|stopPropagation on:keydown|stopPropagation>
     <div class="modal-header">
       <div class="header-icon">{actionIcon}</div>
-      <h2>{actionTitle}</h2>
+      <h2>Установка связи с роутером</h2>
       <p class="header-description">
-        Для выполнения этого действия необходимо подключение к роутеру
+        Для выполнения действия "{actionTitle}" необходимо подключение к роутеру
       </p>
     </div>
 
@@ -300,6 +300,8 @@
   .btn.secondary:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
+    background: linear-gradient(135deg, #4b5563, #6b7280);
+    color: white;
   }
 
   .btn:disabled {

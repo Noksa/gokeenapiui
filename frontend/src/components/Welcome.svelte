@@ -17,15 +17,16 @@
 </script>
 
 <div class="welcome-container">
-  <div class="network-icon">
-    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-    </svg>
+  <div class="animated-header">
+    <div class="animated-title">Gokeenapi</div>
+    <div class="network-icon">
+      <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+    </div>
   </div>
-  
-  <h1>Gokeenapi</h1>
   <div class="description">
     <div class="main-text">
       <span class="highlight">Мощная утилита</span> для управления роутерами Keenetic
@@ -66,6 +67,50 @@
 </div>
 
 <style>
+  .animated-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .animated-title {
+    font-size: 2.2em;
+    font-weight: 800;
+    background: linear-gradient(135deg, #2a5298, #3b82f6, #06b6d4, #10b981);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 4s ease-in-out infinite, titleFloat 3s ease-in-out infinite;
+    margin: 10px 0 15px 0;
+    padding: 5px 0;
+    text-shadow: 0 4px 8px rgba(42, 82, 152, 0.3);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .network-icon {
+    color: #2a5298;
+    animation: iconPulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 4px 8px rgba(42, 82, 152, 0.3));
+  }
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  @keyframes titleFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+  }
+
+  @keyframes iconPulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+  }
+
   .welcome-container {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
@@ -89,22 +134,6 @@
     height: 4px;
     background: linear-gradient(90deg, #00d4ff, #5b86e5, #36d1dc);
     animation: pulse 2s ease-in-out infinite alternate;
-  }
-
-  .network-icon {
-    text-align: center;
-    color: #2a5298;
-    margin-bottom: 20px;
-    animation: float 3s ease-in-out infinite;
-  }
-
-  h1 {
-    text-align: center;
-    color: #1e3c72;
-    margin-bottom: 30px;
-    font-size: 2.8em;
-    font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .description {

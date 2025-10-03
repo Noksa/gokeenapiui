@@ -61,7 +61,7 @@
       type="text" 
       bind:value={routerConfig.login}
       on:input={() => handleFieldError('login')}
-      placeholder="Логин администратора"
+      placeholder="Логин"
       class:error={fieldErrors.login}
     />
   </div>
@@ -76,7 +76,7 @@
       type="password" 
       bind:value={routerConfig.password}
       on:input={() => handleFieldError('password')}
-      placeholder="Пароль администратора"
+      placeholder="Пароль"
       class:error={fieldErrors.password}
     />
   </div>

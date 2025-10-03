@@ -110,32 +110,34 @@
     </FormSection>
 
     <FormSection title="Настройка маршрутов" icon="🛣️">
-      <div class="form-group">
-        <label for="interface-id">
-          <span class="label-icon">🔌</span>
-          ID интерфейса
-        </label>
-        <input 
-          id="interface-id"
-          type="text" 
-          bind:value={routeConfig.interfaceId}
-          on:input={() => clearFieldError('interfaceId')}
-          placeholder="Например: Wireguard0"
-          class:error={fieldErrors.interfaceId}
-        />
+      <div class="interface-section">
+        <div class="section-header">
+          <h4>🔌 ID интерфейса</h4>
+          <div class="interface-input-container">
+            <input 
+              id="interface-id"
+              type="text" 
+              bind:value={routeConfig.interfaceId}
+              on:input={() => clearFieldError('interfaceId')}
+              placeholder="Например: Wireguard0"
+              class="interface-input"
+              class:error={fieldErrors.interfaceId}
+            />
+          </div>
+        </div>
       </div>
 
       <div class="routes-config">
         <div class="config-section">
-          <h4>📄 BAT файлы</h4>
-          <div class="input-row">
-            <button type="button" class="btn primary" on:click={selectBatFiles}>
+          <div class="section-header">
+            <h4>📄 BAT файлы</h4>
+            <button type="button" class="btn primary compact" on:click={selectBatFiles}>
               <span class="btn-icon">📁</span>
               Добавить файл
+              {#if routeConfig.batFiles.length > 0}
+                <span class="count-badge">{routeConfig.batFiles.length}</span>
+              {/if}
             </button>
-            {#if routeConfig.batFiles.length > 0}
-              <span class="count-badge">{routeConfig.batFiles.length}</span>
-            {/if}
           </div>
           
           {#if routeConfig.batFiles.length > 0}
@@ -152,17 +154,20 @@
         </div>
 
         <div class="config-section">
-          <h4>🔗 URL ссылки</h4>
-          <div class="input-row">
-            <input 
-              type="url" 
-              bind:value={newUrl}
-              placeholder="https://example.com/routes.bat"
-              on:keydown={(e) => e.key === 'Enter' && (e.preventDefault(), addUrl())}
-            />
-            <button type="button" class="btn secondary" on:click={addUrl}>
-              <span class="btn-icon">➕</span>
-            </button>
+          <div class="section-header">
+            <h4>🔗 URL ссылки</h4>
+            <div class="url-input-container">
+              <input 
+                type="url" 
+                bind:value={newUrl}
+                placeholder="Введите URL..."
+                class="url-input"
+                on:keydown={(e) => e.key === 'Enter' && (e.preventDefault(), addUrl())}
+              />
+              <button type="button" class="btn secondary compact add-btn" on:click={addUrl}>
+                <span class="btn-icon">➕</span>
+              </button>
+            </div>
           </div>
           
           {#if routeConfig.batUrls.length > 0}
@@ -233,49 +238,115 @@
   }
 
   .routes-config {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 20px;
     margin-top: 15px;
+  }
+
+  .interface-section {
+    margin-bottom: 10px;
+  }
+
+  .interface-input-container {
+    max-width: 250px;
+  }
+
+  .interface-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid rgba(42, 82, 152, 0.2);
+    border-radius: 8px;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    box-sizing: border-box;
+  }
+
+  .interface-input:focus {
+    outline: none;
+    border-color: #2a5298;
+    box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+    background: white;
+  }
+
+  .interface-input.error {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
   }
 
   .config-section {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
   }
 
   .config-section h4 {
     margin: 0;
-    font-size: 0.9em;
+    font-size: 0.95em;
     color: #2a5298;
     font-weight: 600;
+    flex-shrink: 0;
   }
 
-  .input-row {
+  .url-input-container {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
-  }
-
-  .input-row input {
     flex: 1;
+    max-width: 300px;
   }
 
-  .input-row button {
-    padding: 10px 16px;
+  .url-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid rgba(42, 82, 152, 0.2);
+    border-radius: 8px;
     font-size: 0.9em;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    min-width: 0;
+  }
+
+  .url-input:focus {
+    outline: none;
+    border-color: #2a5298;
+    box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+    background: white;
+  }
+
+  .btn.compact {
+    padding: 8px 16px;
+    font-size: 0.9em;
+    position: relative;
+  }
+
+  .add-btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    min-width: 40px;
   }
 
   .count-badge {
-    background: #2a5298;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #059669;
     color: white;
-    border-radius: 12px;
-    padding: 4px 8px;
-    font-size: 0.8em;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 0.7em;
     font-weight: 600;
-    min-width: 20px;
+    min-width: 18px;
     text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .items-list {
@@ -339,13 +410,6 @@
     font-size: 0.9em;
     text-align: center;
     margin-top: 15px;
-  }
-
-  @media (max-width: 600px) {
-    .routes-config {
-      grid-template-columns: 1fr;
-      gap: 15px;
-    }
   }
 
   .file-btn-container {

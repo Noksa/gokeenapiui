@@ -15,7 +15,7 @@ export interface RouteConfig {
   batUrls: string[];
 }
 
-export type ViewType = 'welcome' | 'create-awg' | 'add-routes' | 'progress' | 'success' | 'error';
+export type ViewType = 'welcome' | 'create-awg' | 'add-routes' | 'progress' | 'wg-interfaces' | 'success' | 'error';
 
 export interface AppState {
   currentView: ViewType;

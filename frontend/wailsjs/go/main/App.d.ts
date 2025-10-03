@@ -18,6 +18,8 @@ export function OpenBatFileDialog():Promise<string>;
 
 export function OpenFileDialog():Promise<string>;
 
+export function ShowWgInterfaces():Promise<Array<main.WgInterface>>;
+
 export function TestRouterConnection(arg1:main.RouterConfig):Promise<void>;
 
 export function ValidateAWGConfig(arg1:main.RouterConfig,arg2:main.AWGConfig):Promise<void>;

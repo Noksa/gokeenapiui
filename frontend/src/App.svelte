@@ -14,6 +14,7 @@
   import Welcome from './components/Welcome.svelte';
   import CreateAWGForm from './components/CreateAWGForm.svelte';
   import RoutesForm from './components/RoutesForm.svelte';
+  import WgInterfacesList from './components/WgInterfacesList.svelte';
   import RouterAccessModal from './components/RouterAccessModal.svelte';
   import Progress from './components/Progress.svelte';
   import Result from './components/Result.svelte';
@@ -34,9 +35,37 @@
 
   // Centralized state management using AppState interface and state manager
   let appState: AppState = createInitialState();
+  let interfaces: any[] = [];
+  let isLoadingInterfaces = false;
+  let interfacesError = '';
+  let lastRouterUrl = '';
+
+  async function loadInterfaces() {
+    if (!appState.routerConfig.url || !appState.routerConfig.login || !appState.routerConfig.password) return;
+    if (isLoadingInterfaces) return; // Предотвращаем множественные вызовы
+    
+    isLoadingInterfaces = true;
+    interfacesError = '';
+    try {
+      const { ShowWgInterfaces } = await import('../wailsjs/go/main/App.js');
+      interfaces = await ShowWgInterfaces();
+      lastRouterUrl = appState.routerConfig.url;
+    } catch (err) {
+      console.error('Ошибка загрузки интерфейсов:', err);
+      interfacesError = err instanceof Error ? err.message : 'Ошибка загрузки интерфейсов';
+      interfaces = [];
+    } finally {
+      isLoadingInterfaces = false;
+    }
+  }
+
+  // Загружаем интерфейсы только при смене роутера или первом подключении
+  $: if (appState.isRouterConnected && appState.routerConfig.url && appState.routerConfig.url !== lastRouterUrl) {
+    loadInterfaces();
+  }
 
   // Navigation handlers
-  let pendingAction: 'create-awg' | 'manage-routes' | 'reconnect' | null = null;
+  let pendingAction: 'create-awg' | 'manage-routes' | 'wg-interfaces' | 'reconnect' | null = null;
 
   function showCreateAWG() {
     if (appState.isRouterConnected) {
@@ -74,6 +103,14 @@
     }
   }
 
+  function showWgInterfaces() {
+    if (appState.isRouterConnected) {
+      appState = updateView(appState, 'wg-interfaces');
+    } else {
+      pendingAction = 'wg-interfaces';
+    }
+  }
+
   function handleRouterAccessProceed() {
     appState = { ...appState, isRouterConnected: true };
     
@@ -81,6 +118,8 @@
       appState = updateView(appState, 'create-awg');
     } else if (pendingAction === 'manage-routes') {
       appState = updateView(appState, 'add-routes');
+    } else if (pendingAction === 'wg-interfaces') {
+      appState = updateView(appState, 'wg-interfaces');
     }
     pendingAction = null;
   }
@@ -241,6 +280,7 @@
       isRouterConnected={appState.isRouterConnected}
       on:create-awg={showCreateAWG}
       on:add-routes={showAddRoutes}
+      on:wg-interfaces={showWgInterfaces}
       on:reconnect-router={showRouterModal}
       on:quit={quit}
     />
@@ -259,9 +299,21 @@
       bind:routerConfig={appState.routerConfig}
       bind:routeConfig={appState.routeConfig}
       isProcessing={appState.isProcessing}
+      {interfaces}
+      {isLoadingInterfaces}
       on:add-routes={addRoutes}
       on:delete-routes={deleteRoutes}
       on:back={showWelcome}
+    />
+
+  {:else if appState.currentView === 'wg-interfaces'}
+    <WgInterfacesList 
+      bind:routerConfig={appState.routerConfig}
+      isLoading={isLoadingInterfaces}
+      {interfaces}
+      error={interfacesError}
+      on:back={showWelcome}
+      on:refresh={loadInterfaces}
     />
   
   {:else if appState.currentView === 'progress'}

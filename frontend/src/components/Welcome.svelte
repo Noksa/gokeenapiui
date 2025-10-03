@@ -52,6 +52,12 @@
       <div class="btn-glow"></div>
     </button>
     
+    <button class="btn primary interfaces-btn" on:click={() => dispatch('wg-interfaces')}>
+      <span class="btn-icon">📡</span>
+      Список WG интерфейсов
+      <div class="btn-glow"></div>
+    </button>
+    
     {#if isRouterConnected}
       <button class="btn secondary reconnect-btn" on:click={() => dispatch('reconnect-router')}>
         <span class="btn-icon">🔌</span>
@@ -207,6 +213,11 @@
     background: linear-gradient(135deg, #059669, #10b981);
   }
 
+  .interfaces-btn {
+    position: relative;
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  }
+
   .btn-glow {
     position: absolute;
     top: 0;
@@ -222,6 +233,10 @@
   }
 
   .route-btn:hover .btn-glow {
+    left: 100%;
+  }
+
+  .interfaces-btn:hover .btn-glow {
     left: 100%;
   }
 

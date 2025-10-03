@@ -7,6 +7,8 @@
   export let routerConfig: RouterConfig;
   export let routeConfig: RouteConfig;
   export let isProcessing: boolean = false;
+  export let interfaces: any[] = [];
+  export let isLoadingInterfaces: boolean = false;
 
   const dispatch = createEventDispatcher<{
     'add-routes': void;
@@ -94,6 +96,8 @@
       bind:routerConfig={routerConfig}
       bind:routeConfig={routeConfig}
       {isProcessing}
+      {interfaces}
+      {isLoadingInterfaces}
       on:submit={handleAddRoutes}
       on:back={handleBack}
     />
@@ -110,14 +114,22 @@
             <div class="section-header">
               <h4>🔌 ID интерфейса</h4>
               <div class="interface-input-container">
-                <input 
+                <select 
                   id="interface-id"
-                  type="text" 
                   bind:value={routeConfig.interfaceId}
-                  placeholder="Например: Wireguard0"
-                  class="interface-input"
+                  class="interface-select"
+                  disabled={isLoadingInterfaces}
                   required
-                />
+                >
+                  <option value="">
+                    {isLoadingInterfaces ? 'Загрузка интерфейсов...' : 'Выберите интерфейс'}
+                  </option>
+                  {#each interfaces as iface}
+                    <option value={iface.Id}>
+                      {iface.Id} {iface.Description ? `- ${iface.Description}` : ''}
+                    </option>
+                  {/each}
+                </select>
               </div>
             </div>
           </div>
@@ -410,22 +422,30 @@
     position: relative;
   }
 
-  .interface-input {
+  .interface-select {
     width: 100%;
     padding: 16px 20px;
     border: 2px solid #e5e7eb;
     border-radius: 12px;
     font-size: 1em;
+    color: #374151;
     transition: all 0.3s ease;
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(5px);
+    cursor: pointer;
   }
 
-  .interface-input:focus {
+  .interface-select:focus {
     outline: none;
     border-color: #2a5298;
     box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
     background: rgba(255, 255, 255, 0.95);
+  }
+
+  .interface-select:disabled {
+    background: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
   }
 
   .button-group {

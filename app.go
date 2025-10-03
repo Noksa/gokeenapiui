@@ -17,6 +17,11 @@ type App struct {
 	ctx context.Context
 }
 
+type WgInterface struct {
+	Id          string
+	Description string
+}
+
 // RouterConfig holds router connection data
 type RouterConfig struct {
 	URL      string `json:"url"`
@@ -205,6 +210,21 @@ func (a *App) ConfigureAWGInterface(awgConfig AWGConfig, interfaceName string) e
 	}
 
 	return nil
+}
+
+func (a *App) ShowWgInterfaces() ([]WgInterface, error) {
+	var ifaces []WgInterface
+	interfaces, err := gokeenrestapi.Interface.GetInterfacesViaRciShowInterfaces(false, "Wireguard")
+	if err != nil {
+		return nil, err
+	}
+	for _, iface := range interfaces {
+		ifaces = append(ifaces, WgInterface{
+			Id:          iface.Id,
+			Description: iface.Description,
+		})
+	}
+	return ifaces, err
 }
 
 // ActivateAWGInterface brings the interface up and waits for it to be ready

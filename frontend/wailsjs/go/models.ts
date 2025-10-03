@@ -46,6 +46,20 @@ export namespace main {
 	        this.password = source["password"];
 	    }
 	}
+	export class WgInterface {
+	    Id: string;
+	    Description: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new WgInterface(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Id = source["Id"];
+	        this.Description = source["Description"];
+	    }
+	}
 
 }
 

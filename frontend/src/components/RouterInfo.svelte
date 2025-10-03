@@ -34,7 +34,7 @@
     bottom: 20px;
     left: 20px;
     cursor: help;
-    z-index: 100;
+    z-index: 50;
   }
 
   .router-icon-container {
@@ -48,7 +48,7 @@
 
   .router-icon {
     font-size: 1.8em;
-    z-index: 2;
+    z-index: 1;
     position: relative;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     animation: float 3s ease-in-out infinite;

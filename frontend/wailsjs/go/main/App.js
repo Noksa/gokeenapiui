@@ -34,6 +34,10 @@ export function OpenFileDialog() {
   return window['go']['main']['App']['OpenFileDialog']();
 }
 
+export function ShowWgInterfaces() {
+  return window['go']['main']['App']['ShowWgInterfaces']();
+}
+
 export function TestRouterConnection(arg1) {
   return window['go']['main']['App']['TestRouterConnection'](arg1);
 }

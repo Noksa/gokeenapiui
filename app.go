@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
+	"sort"
 	"time"
 
 	"github.com/noksa/gokeenapi/pkg/config"
@@ -224,6 +225,9 @@ func (a *App) ShowWgInterfaces() ([]WgInterface, error) {
 			Description: iface.Description,
 		})
 	}
+	sort.SliceStable(ifaces, func(i, j int) bool {
+		return ifaces[i].Id < ifaces[j].Id
+	})
 	return ifaces, err
 }
 

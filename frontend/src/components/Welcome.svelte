@@ -26,12 +26,18 @@
   </div>
   
   <h1>Gokeenapi</h1>
-  <p class="description">
-    Утилита для работы с роутерами Keenetic через REST API<br><br>
-    (!) Данная версия является GUI версией и содержит не весь функционал<br><br>
-    Если Вам нужен весь функционал, воспользуйтесь 
-    <button type="button" class="link-button" on:click={openGithubLink}>CLI версией</button>
-  </p>
+  <div class="description">
+    <div class="main-text">
+      <span class="highlight">Мощная утилита</span> для управления роутерами Keenetic
+    </div>
+    <div class="sub-text">
+      Создавайте AWG соединения и настраивайте маршруты через удобный графический интерфейс
+    </div>
+    <div class="note">
+      Нужен полный функционал? Используйте 
+      <button type="button" class="link-button" on:click={openGithubLink}>CLI версию</button>
+    </div>
+  </div>
   
   <div class="button-group">
     <button class="btn primary network-btn" on:click={() => dispatch('create-awg')}>
@@ -103,10 +109,42 @@
 
   .description {
     text-align: center;
-    color: #4a5568;
-    line-height: 1.8;
     margin-bottom: 40px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .main-text {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #2a5298;
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .highlight {
+    background: linear-gradient(135deg, #2a5298, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+  }
+
+  .sub-text {
     font-size: 1.1em;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .note {
+    font-size: 0.95em;
+    color: #94a3b8;
+    padding: 12px 20px;
+    background: rgba(148, 163, 184, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
   }
 
   .button-group {

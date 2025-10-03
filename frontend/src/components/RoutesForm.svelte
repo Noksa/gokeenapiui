@@ -2,6 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   import AddRoutesForm from './AddRoutesForm.svelte';
   import FormSection from './FormSection.svelte';
+  import RouterInfo from './RouterInfo.svelte';
 
   export let routerConfig: RouterConfig;
   export let routeConfig: RouteConfig;
@@ -144,6 +145,8 @@
           </button>
         </div>
       </form>
+      
+      <RouterInfo routerUrl={routerConfig.url} />
     </div>
   {/if}
 </div>
@@ -366,6 +369,7 @@
     }
   }
   .form-container {
+    position: relative;
     width: 100%;
     max-width: 600px;
     margin: 0 auto;

@@ -2,9 +2,10 @@
   import { createEventDispatcher } from 'svelte';
   import type { RouterConfig, RouteConfig } from '../types';
   import { OpenBatFileDialog } from '../../wailsjs/go/main/App.js';
-  import RouterAccessSection from './RouterAccessSection.svelte';
   import FormSection from './FormSection.svelte';
+  import RouterInfo from './RouterInfo.svelte';
 
+  export let routerConfig: RouterConfig;
   export let routeConfig: RouteConfig;
   export let isProcessing: boolean = false;
 
@@ -187,10 +188,13 @@
       </button>
     </div>
   </form>
+  
+  <RouterInfo routerUrl={routerConfig.url} />
 </div>
 
 <style>
   .form-container {
+    position: relative;
     width: 100%;
     max-width: 600px;
     margin: 0 auto;

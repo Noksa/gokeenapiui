@@ -3,6 +3,7 @@
     import type {AWGConfig, RouterConfig} from '../types';
     import {OpenFileDialog} from '../../wailsjs/go/main/App.js';
     import FormSection from './FormSection.svelte';
+    import RouterInfo from './RouterInfo.svelte';
 
     export let routerConfig: RouterConfig;
   export let awgConfig: AWGConfig;
@@ -152,10 +153,13 @@
       </button>
     </div>
   </form>
+  
+  <RouterInfo routerUrl={routerConfig.url} />
 </div>
 
 <style>
   .form-container {
+    position: relative;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-radius: 20px;

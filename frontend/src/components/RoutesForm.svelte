@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import AddRoutesForm from './AddRoutesForm.svelte';
-  import type { RouterConfig, RouteConfig } from '../types';
+  import FormSection from './FormSection.svelte';
 
   export let routerConfig: RouterConfig;
   export let routeConfig: RouteConfig;
@@ -14,6 +14,7 @@
   }>();
 
   let currentView: 'menu' | 'add-routes' | 'delete-routes' = 'menu';
+  let showConfirmDialog = false;
 
   function showAddRoutes() {
     currentView = 'add-routes';
@@ -32,7 +33,20 @@
   }
 
   function handleDeleteRoutes() {
+    if (!routeConfig.interfaceId.trim()) {
+      return; // Просто не делаем ничего если поле пустое
+    }
+    
+    showConfirmDialog = true;
+  }
+
+  function confirmDelete() {
+    showConfirmDialog = false;
     dispatch('delete-routes');
+  }
+
+  function cancelDelete() {
+    showConfirmDialog = false;
   }
 
   function handleBack() {
@@ -84,17 +98,82 @@
     />
 
   {:else if currentView === 'delete-routes'}
-    <!-- TODO: Implement DeleteRoutesForm -->
-    <div class="placeholder-form">
-      <h2>Удаление маршрутов</h2>
-      <p>Функция удаления маршрутов будет добавлена позже</p>
-      <button class="btn secondary" on:click={handleBack}>
-        <span class="btn-icon">↩️</span>
-        Назад
-      </button>
+    <div class="form-container">
+      <form on:submit|preventDefault={handleDeleteRoutes}>
+        <div class="form-content">
+          <h2>Удаление маршрутов</h2>
+        </div>
+        
+        <FormSection title="Удаление маршрутов" icon="🗑️">
+          <div class="interface-section">
+            <div class="section-header">
+              <h4>🔌 ID интерфейса</h4>
+              <div class="interface-input-container">
+                <input 
+                  id="interface-id"
+                  type="text" 
+                  bind:value={routeConfig.interfaceId}
+                  placeholder="Например: Wireguard0"
+                  class="interface-input"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          
+          <div class="warning-section">
+            <div class="warning-box">
+              <span class="warning-icon">⚠️</span>
+              <div class="warning-text">
+                <strong>Внимание!</strong><br>
+                Будут удалены все пользовательские маршруты для указанного интерфейса.<br>
+                Это действие нельзя отменить.
+              </div>
+            </div>
+          </div>
+        </FormSection>
+
+        <div class="button-group">
+          <button type="submit" class="btn danger" disabled={isProcessing}>
+            <span class="btn-icon">🗑️</span>
+            Удалить маршруты
+          </button>
+          <button type="button" class="btn secondary" on:click={handleBack}>
+            <span class="btn-icon">↩️</span>
+            Назад
+          </button>
+        </div>
+      </form>
     </div>
   {/if}
 </div>
+
+{#if showConfirmDialog}
+  <div class="modal-overlay" on:click={cancelDelete} on:keydown={(e) => e.key === 'Escape' && cancelDelete()}>
+    <div class="confirm-dialog" on:click|stopPropagation on:keydown={() => {}}>
+      <div class="dialog-header">
+        <span class="dialog-icon">⚠️</span>
+        <h3>Подтверждение удаления</h3>
+      </div>
+      
+      <div class="dialog-content">
+        <p>Вы уверены, что хотите удалить все пользовательские маршруты для интерфейса <strong>"{routeConfig.interfaceId}"</strong>?</p>
+        <p class="warning-text">Это действие нельзя отменить.</p>
+      </div>
+      
+      <div class="dialog-buttons">
+        <button class="btn danger" on:click={confirmDelete}>
+          <span class="btn-icon">🗑️</span>
+          Удалить
+        </button>
+        <button class="btn secondary" on:click={cancelDelete}>
+          <span class="btn-icon">❌</span>
+          Отмена
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
 
 <style>
   .form-container {
@@ -149,19 +228,6 @@
       opacity: 1;
       transform: translateY(0);
     }
-  }
-
-  .placeholder-form {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
-    border-radius: 20px;
-    padding: 40px;
-    box-shadow: 
-      0 20px 40px rgba(0, 0, 0, 0.1),
-      0 0 0 1px rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    text-align: center;
-    animation: slideIn 0.6s ease-out;
   }
 
   h2 {
@@ -298,5 +364,206 @@
     .btn {
       min-width: 180px;
     }
+  }
+  .form-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  form {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.1),
+      0 0 0 1px rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  h2 {
+    text-align: center;
+    color: #2a5298;
+    margin-bottom: 30px;
+    font-size: 2em;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(42, 82, 152, 0.1);
+  }
+
+  .interface-section {
+    margin-bottom: 25px;
+  }
+
+  .section-header h4 {
+    margin-bottom: 12px;
+    color: #2a5298;
+    font-weight: 600;
+    font-size: 1.1em;
+  }
+
+  .interface-input-container {
+    position: relative;
+  }
+
+  .interface-input {
+    width: 100%;
+    padding: 16px 20px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+  }
+
+  .interface-input:focus {
+    outline: none;
+    border-color: #2a5298;
+    box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  .button-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+  }
+
+  .btn {
+    position: relative;
+    padding: 16px 32px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    overflow: hidden;
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-icon {
+    font-size: 1.2em;
+  }
+
+  .btn.secondary {
+    background: linear-gradient(135deg, #6b7280, #9ca3af);
+    color: white;
+    box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
+  }
+
+  .btn.secondary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
+  }
+
+  .btn.danger {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    color: white;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+  }
+
+  .btn.danger:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.5);
+  }
+
+  .warning-section {
+    margin-top: 25px;
+  }
+
+  .warning-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 20px;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 2px solid #f59e0b;
+    border-radius: 12px;
+    margin-bottom: 25px;
+  }
+
+  .warning-icon {
+    font-size: 1.5em;
+    flex-shrink: 0;
+  }
+
+  .warning-text {
+    color: #92400e;
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .confirm-dialog {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  .dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .dialog-icon {
+    font-size: 2em;
+  }
+
+  .dialog-header h3 {
+    margin: 0;
+    color: #2a5298;
+    font-size: 1.3em;
+  }
+
+  .dialog-content {
+    margin-bottom: 25px;
+    line-height: 1.6;
+  }
+
+  .dialog-content .warning-text {
+    color: #dc2626;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+
+  .dialog-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .dialog-buttons .btn {
+    min-width: 120px;
+    padding: 12px 20px;
   }
 </style>

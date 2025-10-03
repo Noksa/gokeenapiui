@@ -3,9 +3,14 @@
 
   export let routerConfig: RouterConfig;
   export let fieldErrors: { url: boolean; login: boolean; password: boolean };
+  export let clearFieldError: ((field: 'url' | 'login' | 'password') => void) | undefined = undefined;
 
-  function clearFieldError(field: 'url' | 'login' | 'password') {
-    fieldErrors[field] = false;
+  function handleFieldError(field: 'url' | 'login' | 'password') {
+    if (clearFieldError) {
+      clearFieldError(field);
+    } else {
+      fieldErrors[field] = false;
+    }
   }
 </script>
 
@@ -39,7 +44,7 @@
     id="router-url"
     type="text" 
     bind:value={routerConfig.url}
-    on:input={() => clearFieldError('url')}
+    on:input={() => handleFieldError('url')}
     placeholder="IP или DNS имя (протокол http/https) роутера"
     class:error={fieldErrors.url}
   />
@@ -55,7 +60,7 @@
       id="router-login"
       type="text" 
       bind:value={routerConfig.login}
-      on:input={() => clearFieldError('login')}
+      on:input={() => handleFieldError('login')}
       placeholder="Логин администратора"
       class:error={fieldErrors.login}
     />
@@ -70,7 +75,7 @@
       id="router-password"
       type="password" 
       bind:value={routerConfig.password}
-      on:input={() => clearFieldError('password')}
+      on:input={() => handleFieldError('password')}
       placeholder="Пароль администратора"
       class:error={fieldErrors.password}
     />
@@ -168,13 +173,27 @@
     padding: 15px;
     border-radius: 10px;
     font-size: 0.85em;
-    white-space: nowrap;
     visibility: hidden;
     opacity: 0;
     z-index: 1000;
     margin-top: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     transition: opacity 0.3s, visibility 0.3s;
+    white-space: normal;
+    max-width: 280px;
+    width: max-content;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 500px) {
+    .tooltip-content {
+      left: 0;
+      right: 0;
+      transform: none;
+      max-width: none;
+      width: auto;
+      margin: 8px 10px 0 10px;
+    }
   }
 
   .tooltip-content::before {

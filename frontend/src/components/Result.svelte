@@ -3,11 +3,12 @@
 
   export let type: 'success' | 'error';
   export let message: string;
+  export let routerPath: string = 'otherConnections';
 
   const dispatch = createEventDispatcher<{
     'retry': void;
     'back': void;
-    'open-router': void;
+    'open-router': { path: string };
     'quit': void;
   }>();
 
@@ -32,12 +33,12 @@
   {#if isSuccess}
     <p class="result-message">{cleanMessage}</p>
     <div class="button-group">
-      <button class="btn primary glow" on:click={() => dispatch('open-router')}>
+      <button class="btn primary glow" on:click={() => dispatch('open-router', { path: routerPath })}>
         <span class="btn-icon">🌐</span>
         Открыть веб-интерфейс роутера
       </button>
       <button class="btn secondary" on:click={() => dispatch('quit')}>
-        Назад
+        Выйти
       </button>
     </div>
   {:else}

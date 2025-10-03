@@ -1,17 +1,20 @@
 <script lang="ts">
   import { 
     ValidateRouterConfig, 
-    ValidateAWGConfig, 
+    ValidateAWGConfig,
     CreateAWGInterface, 
     ConfigureAWGInterface, 
     ActivateAWGInterface, 
-    GetRouterWebURL 
+    GetRouterWebURL,
+    AddRoutes,
+    DeleteRoutes
   } from '../wailsjs/go/main/App.js';
   import { BrowserOpenURL, Quit } from '../wailsjs/runtime';
   
   import Welcome from './components/Welcome.svelte';
   import CreateAWGForm from './components/CreateAWGForm.svelte';
   import RoutesForm from './components/RoutesForm.svelte';
+  import RouterAccessModal from './components/RouterAccessModal.svelte';
   import Progress from './components/Progress.svelte';
   import Result from './components/Result.svelte';
   
@@ -33,12 +36,47 @@
   let appState: AppState = createInitialState();
 
   // Navigation handlers
+  let pendingAction: 'create-awg' | 'manage-routes' | null = null;
+
   function showCreateAWG() {
+    pendingAction = 'create-awg';
+  }
+
+  function retryCreateAWG() {
     appState = updateView(appState, 'create-awg');
   }
 
-  function showAddRoutes() {
+  function retryAddRoutes() {
     appState = updateView(appState, 'add-routes');
+  }
+
+  function handleRetry() {
+    // Определяем, какое действие нужно повторить на основе последнего действия
+    if (appState.currentView === 'error') {
+      // Если мы пришли из формы маршрутов, возвращаемся туда
+      if (appState.routeConfig && (appState.routeConfig.batFiles?.length > 0 || appState.routeConfig.batUrls?.length > 0)) {
+        retryAddRoutes();
+      } else {
+        retryCreateAWG();
+      }
+    }
+  }
+
+  function showAddRoutes() {
+    pendingAction = 'manage-routes';
+  }
+
+  function handleRouterAccessProceed() {
+    if (pendingAction === 'create-awg') {
+      appState = updateView(appState, 'create-awg');
+    } else if (pendingAction === 'manage-routes') {
+      appState = updateView(appState, 'add-routes');
+    }
+    pendingAction = null;
+  }
+
+  function handleRouterAccessCancel() {
+    pendingAction = null;
   }
 
   function showWelcome() {
@@ -50,6 +88,7 @@
     if (appState.isProcessing) return;
     
     try {
+      appState = { ...appState, lastAction: 'create-awg' };
       appState = setProcessing(appState, true);
       
       // Validate form
@@ -71,14 +110,19 @@
       
       // Create AWG interface
       const interfaceName = await CreateAWGInterface(appState.awgConfig);
-      
+      setTimeout(() => {
+            // nothing
+        }, 1000);
       appState = setProgress(appState, 'Настраиваем соединение...');
       
       // Configure AWG interface
       await ConfigureAWGInterface(appState.awgConfig, interfaceName);
       
       appState = setProgress(appState, 'Активируем соединение...');
-      
+      setTimeout(() => {
+          // nothing
+      }, 1000);
+
       // Activate AWG interface
       await ActivateAWGInterface(interfaceName);
         
@@ -98,27 +142,33 @@
     if (appState.isProcessing) return;
     
     try {
+      appState = { ...appState, lastAction: 'add-routes' };
       appState = setProcessing(appState, true);
       
-      // Validate form
-      if (!appState.routeConfig.batFilePath) {
-        throw new Error('Выберите BAT файл с маршрутами');
+      // Validate form - проверяем что есть хотя бы один файл ИЛИ URL
+      if (!appState.routeConfig.batFiles.length && !appState.routeConfig.batUrls.length) {
+        throw new Error('Укажите хотя бы один BAT файл или URL ссылку');
+      }
+      
+      if (!appState.routeConfig.interfaceId) {
+        throw new Error('Укажите ID интерфейса');
       }
       
       appState = setProgress(appState, 'Проверяем подключение к роутеру...');
       
-      // Validate router config
-      await ValidateRouterConfig(appState.routerConfig);
+      appState = setProgress(appState, 'Добавляем маршруты...\nЭто может занять некоторое время если маршрутов очень много.');
       
-      appState = setProgress(appState, 'Добавляем маршруты из BAT файла...');
-      
-      // TODO: Implement AddRoutesFromBatFile function in Go backend
-      // await AddRoutesFromBatFile(appState.routerConfig, appState.routeConfig);
+      // Add routes using the new function
+      await AddRoutes(
+        appState.routeConfig.interfaceId,
+        appState.routeConfig.batFiles,
+        appState.routeConfig.batUrls
+      );
       
       // Success
       appState = setSuccess(
         appState, 
-        `Маршруты успешно добавлены для интерфейса "${appState.routeConfig.interfaceId}"!\nТеперь трафик будет направляться через указанный интерфейс.`
+        `Маршруты успешно добавлены для интерфейса "${appState.routeConfig.interfaceId}"!\nТеперь трафик для указанных адресов/подсетей будет направляться через этот интерфейс.`
       );
       
     } catch (error) {
@@ -131,17 +181,20 @@
     if (appState.isProcessing) return;
     
     try {
+      appState = { ...appState, lastAction: 'add-routes' };
       appState = setProcessing(appState, true);
       
+      // Validate interface ID
+      if (!appState.routeConfig.interfaceId) {
+        throw new Error('Укажите ID интерфейса');
+      }
+      
       appState = setProgress(appState, 'Проверяем подключение к роутеру...');
-      
-      // Validate router config
-      await ValidateRouterConfig(appState.routerConfig);
-      
+
       appState = setProgress(appState, 'Удаляем маршруты...');
       
-      // TODO: Implement DeleteRoutes function in Go backend
-      // await DeleteRoutes(appState.routerConfig, appState.routeConfig);
+      // Delete routes using the new function
+      await DeleteRoutes(appState.routeConfig.interfaceId);
       
       // Success
       appState = setSuccess(
@@ -154,9 +207,9 @@
     }
   }
 
-  async function openRouterInterface() {
+  async function openRouterInterface(path: string = 'otherConnections') {
     try {
-      const url = await GetRouterWebURL(appState.routerConfig.url);
+      const url = await GetRouterWebURL(appState.routerConfig.url, path);
       BrowserOpenURL(url);
     } catch (error) {
       console.error('Error opening router interface:', error);
@@ -202,7 +255,8 @@
     <Result 
       type="success"
       message={appState.successMessage}
-      on:open-router={openRouterInterface}
+      routerPath={appState.lastAction === 'add-routes' ? 'staticRoutes' : 'otherConnections'}
+      on:open-router={(e) => openRouterInterface(e.detail.path)}
       on:quit={quit}
     />
   
@@ -210,8 +264,18 @@
     <Result 
       type="error"
       message={appState.errorMessage}
-      on:retry={showCreateAWG}
+      on:retry={handleRetry}
       on:back={showWelcome}
+    />
+  {/if}
+
+  {#if pendingAction}
+    <RouterAccessModal
+      bind:routerConfig={appState.routerConfig}
+      actionTitle={pendingAction === 'create-awg' ? 'Создание AWG соединения' : 'Управление маршрутами'}
+      actionIcon={pendingAction === 'create-awg' ? '🛜' : '🛣️'}
+      on:proceed={handleRouterAccessProceed}
+      on:cancel={handleRouterAccessCancel}
     />
   {/if}
 </main>

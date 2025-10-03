@@ -10,7 +10,8 @@ export function createInitialState(): AppState {
     progressMessage: '',
     errorMessage: '',
     successMessage: '',
-    isProcessing: false
+    isProcessing: false,
+    lastAction: null
   };
 }
 

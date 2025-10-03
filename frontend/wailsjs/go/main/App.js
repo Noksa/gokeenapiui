@@ -6,6 +6,10 @@ export function ActivateAWGInterface(arg1) {
   return window['go']['main']['App']['ActivateAWGInterface'](arg1);
 }
 
+export function AddRoutes(arg1, arg2, arg3) {
+  return window['go']['main']['App']['AddRoutes'](arg1, arg2, arg3);
+}
+
 export function ConfigureAWGInterface(arg1, arg2) {
   return window['go']['main']['App']['ConfigureAWGInterface'](arg1, arg2);
 }
@@ -14,16 +18,32 @@ export function CreateAWGInterface(arg1) {
   return window['go']['main']['App']['CreateAWGInterface'](arg1);
 }
 
-export function GetRouterWebURL(arg1) {
-  return window['go']['main']['App']['GetRouterWebURL'](arg1);
+export function DeleteRoutes(arg1) {
+  return window['go']['main']['App']['DeleteRoutes'](arg1);
+}
+
+export function GetRouterWebURL(arg1, arg2) {
+  return window['go']['main']['App']['GetRouterWebURL'](arg1, arg2);
+}
+
+export function OpenBatFileDialog() {
+  return window['go']['main']['App']['OpenBatFileDialog']();
 }
 
 export function OpenFileDialog() {
   return window['go']['main']['App']['OpenFileDialog']();
 }
 
+export function TestRouterConnection(arg1) {
+  return window['go']['main']['App']['TestRouterConnection'](arg1);
+}
+
 export function ValidateAWGConfig(arg1, arg2) {
   return window['go']['main']['App']['ValidateAWGConfig'](arg1, arg2);
+}
+
+export function ValidateRouteConfig(arg1) {
+  return window['go']['main']['App']['ValidateRouteConfig'](arg1);
 }
 
 export function ValidateRouterConfig(arg1) {

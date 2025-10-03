@@ -1,11 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import type { RouterConfig, RouteConfig } from '../types';
-  import { OpenFileDialog } from '../../wailsjs/go/main/App.js';
+  import { OpenBatFileDialog } from '../../wailsjs/go/main/App.js';
   import RouterAccessSection from './RouterAccessSection.svelte';
   import FormSection from './FormSection.svelte';
 
-  export let routerConfig: RouterConfig;
   export let routeConfig: RouteConfig;
   export let isProcessing: boolean = false;
 
@@ -19,18 +18,18 @@
     login: false,
     password: false,
     interfaceId: false,
-    batFiles: false
+    routes: false
   };
 
   let newUrl = '';
 
   async function selectBatFiles() {
     try {
-      const result = await OpenFileDialog();
+      const result = await OpenBatFileDialog();
       
       if (result && !routeConfig.batFiles.includes(result)) {
         routeConfig.batFiles = [...routeConfig.batFiles, result];
-        clearFieldError('batFiles');
+        clearFieldError('routes');
       }
     } catch (error) {
       console.error('Error selecting file:', error);
@@ -45,6 +44,7 @@
     if (newUrl.trim() && !routeConfig.batUrls.includes(newUrl.trim())) {
       routeConfig.batUrls = [...routeConfig.batUrls, newUrl.trim()];
       newUrl = '';
+      clearFieldError('routes');
     }
   }
 
@@ -63,30 +63,21 @@
       login: false,
       password: false,
       interfaceId: false,
-      batFilePath: false
+      routes: false
     };
     
     // Проверка обязательных полей
     let hasErrors = false;
     
-    if (!routerConfig.url.trim()) {
-      fieldErrors.url = true;
-      hasErrors = true;
-    }
-    if (!routerConfig.login.trim()) {
-      fieldErrors.login = true;
-      hasErrors = true;
-    }
-    if (!routerConfig.password.trim()) {
-      fieldErrors.password = true;
-      hasErrors = true;
-    }
+    // ID интерфейса обязателен
     if (!routeConfig.interfaceId.trim()) {
       fieldErrors.interfaceId = true;
       hasErrors = true;
     }
+    
+    // Хотя бы один BAT файл ИЛИ одна URL ссылка должны быть указаны
     if (!routeConfig.batFiles.length && !routeConfig.batUrls.length) {
-      fieldErrors.batFiles = true;
+      fieldErrors.routes = true;
       hasErrors = true;
     }
     
@@ -102,13 +93,6 @@
       <h2>Добавление маршрутов</h2>
     </div>
     
-    <FormSection>
-      <RouterAccessSection 
-        bind:routerConfig={routerConfig}
-        bind:fieldErrors={fieldErrors}
-      />
-    </FormSection>
-
     <FormSection title="Настройка маршрутов" icon="🛣️">
       <div class="interface-section">
         <div class="section-header">
@@ -184,7 +168,7 @@
         </div>
       </div>
 
-      {#if !routeConfig.batFiles.length && !routeConfig.batUrls.length && fieldErrors.batFiles}
+      {#if !routeConfig.batFiles.length && !routeConfig.batUrls.length && fieldErrors.routes}
         <div class="error-message">
           Добавьте хотя бы один BAT файл или URL ссылку
         </div>
@@ -411,23 +395,6 @@
     text-align: center;
     margin-top: 15px;
   }
-
-  .file-btn-container {
-    display: flex;
-    justify-content: flex-start;
-  }
-
-  .file-btn {
-    width: auto;
-    justify-content: center;
-  }
-
-  .file-btn.small {
-    font-size: 0.85em;
-    padding: 8px 16px;
-    opacity: 0.8;
-  }
-
   .button-group {
     display: flex;
     gap: 20px;
@@ -479,16 +446,6 @@
     box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
   }
 
-  .btn.network {
-    background: linear-gradient(135deg, #059669, #10b981);
-    color: white;
-    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
-  }
-
-  .btn.network:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(5, 150, 105, 0.5);
-  }
 
   .btn:disabled {
     opacity: 0.6;
@@ -520,9 +477,6 @@
   }
 
   @media (max-width: 600px) {
-    .form-row {
-      grid-template-columns: 1fr;
-    }
     
     .button-group {
       flex-direction: column;

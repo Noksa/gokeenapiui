@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"path/filepath"
 	"time"
 
 	"github.com/noksa/gokeenapi/pkg/config"
@@ -27,6 +28,13 @@ type RouterConfig struct {
 type AWGConfig struct {
 	Name     string `json:"name"`
 	FilePath string `json:"filePath"`
+}
+
+// RouteConfig holds route configuration data
+type RouteConfig struct {
+	InterfaceId string   `json:"interfaceId"`
+	BatFiles    []string `json:"batFiles"`
+	BatUrls     []string `json:"batUrls"`
 }
 
 // ProgressUpdate represents progress information
@@ -65,6 +73,53 @@ func (a *App) OpenFileDialog() (string, error) {
 	return selection, err
 }
 
+// OpenBatFileDialog opens a file selection dialog for BAT files
+func (a *App) OpenBatFileDialog() (string, error) {
+	selection, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "Выбор BAT файла с маршрутами",
+		Filters: []runtime.FileFilter{
+			{
+				DisplayName: "BAT Files (*.bat)",
+				Pattern:     "*.bat",
+			},
+			{
+				DisplayName: "All Files (*.*)",
+				Pattern:     "*.*",
+			},
+		},
+	})
+	return selection, err
+}
+
+func (a *App) DeleteRoutes(interfaceId string) error {
+	routes, err := gokeenrestapi.Ip.GetAllUserRoutesRciIpRoute(interfaceId)
+	if err != nil {
+		return err
+	}
+	err = gokeenrestapi.Ip.DeleteRoutes(routes, interfaceId)
+	return err
+}
+
+func (a *App) AddRoutes(interfaceId string, batFiles []string, batUrls []string) error {
+	for _, file := range batFiles {
+		absFilePath, err := filepath.Abs(file)
+		if err != nil {
+			return err
+		}
+		err = gokeenrestapi.Ip.AddRoutesFromBatFile(absFilePath, interfaceId)
+		if err != nil {
+			return err
+		}
+	}
+	for _, url := range batUrls {
+		err := gokeenrestapi.Ip.AddRoutesFromBatUrl(url, interfaceId)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // ValidateRouterConfig validates router configuration data
 func (a *App) ValidateRouterConfig(routerConfig RouterConfig) error {
 	var mErr error
@@ -78,6 +133,26 @@ func (a *App) ValidateRouterConfig(routerConfig RouterConfig) error {
 		mErr = multierr.Append(mErr, fmt.Errorf("URL роутера не введен"))
 	}
 	return mErr
+}
+
+// TestRouterConnection tests actual connection to router
+func (a *App) TestRouterConnection(routerConfig RouterConfig) error {
+	// Set configuration
+	config.Cfg.Keenetic.URL = routerConfig.URL
+	config.Cfg.Keenetic.Login = routerConfig.Login
+	config.Cfg.Keenetic.Password = routerConfig.Password
+
+	// Validate router data first
+	if err := a.ValidateRouterConfig(routerConfig); err != nil {
+		return err
+	}
+
+	// Authenticate
+	if err := gokeenrestapi.Common.Auth(); err != nil {
+		return fmt.Errorf("ошибка авторизации: %w", err)
+	}
+
+	return nil
 }
 
 // ValidateAWGConfig validates AWG configuration and authenticates
@@ -147,7 +222,25 @@ func (a *App) ActivateAWGInterface(interfaceName string) error {
 	return nil
 }
 
-// GetRouterWebURL returns the router web interface URL
-func (a *App) GetRouterWebURL(routerURL string) string {
-	return fmt.Sprintf("%v/otherConnections", routerURL)
+// GetRouterWebURL returns the router web interface URL with specific path
+func (a *App) GetRouterWebURL(routerURL string, path string) string {
+	if path == "" {
+		return routerURL
+	}
+	return fmt.Sprintf("%v/%v", routerURL, path)
+}
+
+// ValidateRouteConfig validates route configuration data
+func (a *App) ValidateRouteConfig(routeConfig RouteConfig) error {
+	var mErr error
+
+	if routeConfig.InterfaceId == "" {
+		mErr = multierr.Append(mErr, fmt.Errorf("ID интерфейса не указан"))
+	}
+
+	if len(routeConfig.BatFiles) == 0 && len(routeConfig.BatUrls) == 0 {
+		mErr = multierr.Append(mErr, fmt.Errorf("укажите хотя бы один BAT файл или URL ссылку"))
+	}
+
+	return mErr
 }

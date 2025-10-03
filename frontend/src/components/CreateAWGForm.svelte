@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import type { RouterConfig, AWGConfig } from '../types';
-  import { OpenFileDialog } from '../../wailsjs/go/main/App.js';
-  import RouterAccessSection from './RouterAccessSection.svelte';
-  import FormSection from './FormSection.svelte';
+    import {createEventDispatcher} from 'svelte';
+    import type {AWGConfig, RouterConfig} from '../types';
+    import {OpenFileDialog} from '../../wailsjs/go/main/App.js';
+    import FormSection from './FormSection.svelte';
 
-  export let routerConfig: RouterConfig;
+    export let routerConfig: RouterConfig;
   export let awgConfig: AWGConfig;
   export let isProcessing: boolean = false;
 
@@ -31,8 +30,7 @@
         clearFieldError('filePath');
         // Extract filename for connection name only if not manually set
         if (!nameManuallySet) {
-          const filename = result.split('/').pop()?.replace('.conf', '') || '';
-          awgConfig.name = filename;
+            awgConfig.name = result.split('/').pop()?.replace('.conf', '') || '';
         }
       }
     } catch (error) {
@@ -99,13 +97,6 @@
   </div>
   
   <form on:submit|preventDefault={handleSubmit}>
-    <FormSection>
-      <RouterAccessSection 
-        bind:routerConfig={routerConfig}
-        bind:fieldErrors={fieldErrors}
-      />
-    </FormSection>
-
     <FormSection title="Настройка AWG" icon="🔒">
       
       <div class="form-group">
@@ -199,35 +190,6 @@
     position: relative;
   }
 
-  .info-tooltip {
-    position: relative;
-    display: inline-block;
-    cursor: help;
-    margin-left: 8px;
-    background: rgba(255, 193, 7, 0.2);
-    border-radius: 50%;
-    padding: 4px;
-    box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
-    animation: glow 2s ease-in-out infinite alternate;
-  }
-
-  .info-icon {
-    font-size: 1.1em;
-    display: inline-block;
-    transition: all 0.3s ease;
-    filter: drop-shadow(0 0 3px rgba(255, 193, 7, 0.8));
-  }
-
-  .info-icon:hover {
-    transform: scale(1.3);
-    filter: drop-shadow(0 0 8px rgba(255, 193, 7, 1));
-  }
-
-  .info-tooltip:hover {
-    animation: none;
-    box-shadow: 0 0 15px rgba(255, 193, 7, 0.6);
-    background: rgba(255, 193, 7, 0.3);
-  }
 
   @keyframes glow {
     0% { 
@@ -239,51 +201,7 @@
       background: rgba(255, 193, 7, 0.25);
     }
   }
-
-  .tooltip-content {
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(42, 82, 152, 0.95);
-    color: whitesmoke;
-    padding: 15px;
-    border-radius: 8px;
-    font-size: 0.9em;
-    line-height: 1.4;
-    white-space: normal;
-    width: 500px;
-    z-index: 1000;
-    margin-top: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    transition: opacity 0.3s, visibility 0.3s;
-  }
-
-  .tooltip-content::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-bottom-color: rgba(42, 82, 152, 0.95);
-  }
-
-  .info-tooltip:hover .tooltip-content {
-    visibility: visible;
-    opacity: 1;
-  }
-
-  .tooltip-content code {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: 'Monaco', 'Menlo', monospace;
-    font-size: 0.85em;
-  }
-
+  
   .router-icon {
     color: #2a5298;
     margin-bottom: 15px;
@@ -295,29 +213,6 @@
     margin: 0;
     font-size: 1.4em;
     font-weight: 600;
-  }
-
-  h3 {
-    color: #2a5298;
-    font-size: 1.1em;
-    margin: 0 0 15px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  code {
-    background: rgba(42, 82, 152, 0.1);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: 'Monaco', 'Menlo', monospace;
-    font-size: 0.9em;
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
   }
 
   .form-group {
@@ -404,27 +299,12 @@
     opacity: 0.8;
   }
 
-  input.error {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
-  }
 
   .form-group.error {
     border: 2px solid #dc3545;
     border-radius: 8px;
     padding: 10px;
     background: rgba(220, 53, 69, 0.05);
-  }
-
-  .validation-error {
-    background: rgba(220, 53, 69, 0.1);
-    color: #dc3545;
-    padding: 12px;
-    border-radius: 8px;
-    border-left: 4px solid #dc3545;
-    margin: 15px 0;
-    font-size: 0.9em;
-    text-align: center;
   }
 
   .button-group {
@@ -464,9 +344,6 @@
   }
 
   @media (max-width: 600px) {
-    .form-row {
-      grid-template-columns: 1fr;
-    }
     
     .button-group {
       flex-direction: column;

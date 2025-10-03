@@ -4,14 +4,24 @@ import {main} from '../models';
 
 export function ActivateAWGInterface(arg1:string):Promise<void>;
 
+export function AddRoutes(arg1:string,arg2:Array<string>,arg3:Array<string>):Promise<void>;
+
 export function ConfigureAWGInterface(arg1:main.AWGConfig,arg2:string):Promise<void>;
 
 export function CreateAWGInterface(arg1:main.AWGConfig):Promise<string>;
 
-export function GetRouterWebURL(arg1:string):Promise<string>;
+export function DeleteRoutes(arg1:string):Promise<void>;
+
+export function GetRouterWebURL(arg1:string,arg2:string):Promise<string>;
+
+export function OpenBatFileDialog():Promise<string>;
 
 export function OpenFileDialog():Promise<string>;
 
+export function TestRouterConnection(arg1:main.RouterConfig):Promise<void>;
+
 export function ValidateAWGConfig(arg1:main.RouterConfig,arg2:main.AWGConfig):Promise<void>;
+
+export function ValidateRouteConfig(arg1:main.RouteConfig):Promise<void>;
 
 export function ValidateRouterConfig(arg1:main.RouterConfig):Promise<void>;

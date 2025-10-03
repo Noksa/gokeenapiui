@@ -14,6 +14,22 @@ export namespace main {
 	        this.filePath = source["filePath"];
 	    }
 	}
+	export class RouteConfig {
+	    interfaceId: string;
+	    batFiles: string[];
+	    batUrls: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new RouteConfig(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.interfaceId = source["interfaceId"];
+	        this.batFiles = source["batFiles"];
+	        this.batUrls = source["batUrls"];
+	    }
+	}
 	export class RouterConfig {
 	    url: string;
 	    login: string;

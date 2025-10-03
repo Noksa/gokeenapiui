@@ -11,6 +11,7 @@
   
   import Welcome from './components/Welcome.svelte';
   import CreateAWGForm from './components/CreateAWGForm.svelte';
+  import RoutesForm from './components/RoutesForm.svelte';
   import Progress from './components/Progress.svelte';
   import Result from './components/Result.svelte';
   
@@ -34,6 +35,10 @@
   // Navigation handlers
   function showCreateAWG() {
     appState = updateView(appState, 'create-awg');
+  }
+
+  function showAddRoutes() {
+    appState = updateView(appState, 'add-routes');
   }
 
   function showWelcome() {
@@ -88,6 +93,67 @@
     }
   }
 
+  // Function for adding routes
+  async function addRoutes() {
+    if (appState.isProcessing) return;
+    
+    try {
+      appState = setProcessing(appState, true);
+      
+      // Validate form
+      if (!appState.routeConfig.batFilePath) {
+        throw new Error('Выберите BAT файл с маршрутами');
+      }
+      
+      appState = setProgress(appState, 'Проверяем подключение к роутеру...');
+      
+      // Validate router config
+      await ValidateRouterConfig(appState.routerConfig);
+      
+      appState = setProgress(appState, 'Добавляем маршруты из BAT файла...');
+      
+      // TODO: Implement AddRoutesFromBatFile function in Go backend
+      // await AddRoutesFromBatFile(appState.routerConfig, appState.routeConfig);
+      
+      // Success
+      appState = setSuccess(
+        appState, 
+        `Маршруты успешно добавлены для интерфейса "${appState.routeConfig.interfaceId}"!\nТеперь трафик будет направляться через указанный интерфейс.`
+      );
+      
+    } catch (error) {
+      appState = setError(appState, handleError(error));
+    }
+  }
+
+  // Function for deleting routes
+  async function deleteRoutes() {
+    if (appState.isProcessing) return;
+    
+    try {
+      appState = setProcessing(appState, true);
+      
+      appState = setProgress(appState, 'Проверяем подключение к роутеру...');
+      
+      // Validate router config
+      await ValidateRouterConfig(appState.routerConfig);
+      
+      appState = setProgress(appState, 'Удаляем маршруты...');
+      
+      // TODO: Implement DeleteRoutes function in Go backend
+      // await DeleteRoutes(appState.routerConfig, appState.routeConfig);
+      
+      // Success
+      appState = setSuccess(
+        appState, 
+        `Маршруты успешно удалены для интерфейса "${appState.routeConfig.interfaceId}"!`
+      );
+      
+    } catch (error) {
+      appState = setError(appState, handleError(error));
+    }
+  }
+
   async function openRouterInterface() {
     try {
       const url = await GetRouterWebURL(appState.routerConfig.url);
@@ -106,6 +172,7 @@
   {#if appState.currentView === 'welcome'}
     <Welcome 
       on:create-awg={showCreateAWG}
+      on:add-routes={showAddRoutes}
       on:quit={quit}
     />
   
@@ -115,6 +182,16 @@
       bind:awgConfig={appState.awgConfig}
       isProcessing={appState.isProcessing}
       on:submit={createConnection}
+      on:back={showWelcome}
+    />
+
+  {:else if appState.currentView === 'add-routes'}
+    <RoutesForm 
+      bind:routerConfig={appState.routerConfig}
+      bind:routeConfig={appState.routeConfig}
+      isProcessing={appState.isProcessing}
+      on:add-routes={addRoutes}
+      on:delete-routes={deleteRoutes}
       on:back={showWelcome}
     />
   

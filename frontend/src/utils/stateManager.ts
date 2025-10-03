@@ -1,11 +1,12 @@
 import type { AppState, ViewType } from '../types';
-import { DEFAULT_ROUTER_CONFIG, DEFAULT_AWG_CONFIG } from '../types';
+import { DEFAULT_ROUTER_CONFIG, DEFAULT_AWG_CONFIG, DEFAULT_ROUTE_CONFIG } from '../types';
 
 export function createInitialState(): AppState {
   return {
     currentView: 'welcome',
     routerConfig: { ...DEFAULT_ROUTER_CONFIG },
     awgConfig: { ...DEFAULT_AWG_CONFIG },
+    routeConfig: { ...DEFAULT_ROUTE_CONFIG },
     progressMessage: '',
     errorMessage: '',
     successMessage: '',

@@ -2,6 +2,8 @@
   import { createEventDispatcher } from 'svelte';
   import type { RouterConfig, AWGConfig } from '../types';
   import { OpenFileDialog } from '../../wailsjs/go/main/App.js';
+  import RouterAccessSection from './RouterAccessSection.svelte';
+  import FormSection from './FormSection.svelte';
 
   export let routerConfig: RouterConfig;
   export let awgConfig: AWGConfig;
@@ -97,70 +99,14 @@
   </div>
   
   <form on:submit|preventDefault={handleSubmit}>
-    <div class="form-section">
-      <h3>🌐 Доступ к роутеру 
-        <div class="info-tooltip">
-          <span class="info-icon">💡</span>
-          <div class="tooltip-content">
-            <strong>Примеры подключения:</strong><br>
-            Внутренний адрес: <code>http://192.168.1.1</code><br>
-            Внешний адрес: <code>https://super-keenetic.keenetic.pro</code><br><br>
-            Если роутер в локальной сети - используйте HTTP и внутренний IP.<br>
-            Если через интернет - используйте HTTPS и KeenDNS имя.
-          </div>
-        </div>
-      </h3>
-      
-      <div class="form-group">
-        <label for="router-url">
-          <span class="label-icon">🔗</span>
-          URL роутера
-        </label>
-        <input 
-          id="router-url"
-          type="text" 
-          bind:value={routerConfig.url}
-          on:input={() => clearFieldError('url')}
-          placeholder="IP или DNS имя (протокол http/https) роутера"
-          class:error={fieldErrors.url}
-        />
-      </div>
-      
-      <div class="form-row">
-        <div class="form-group">
-          <label for="router-login">
-            <span class="label-icon">👤</span>
-            Логин
-          </label>
-          <input 
-            id="router-login"
-            type="text" 
-            bind:value={routerConfig.login}
-            on:input={() => clearFieldError('login')}
-            placeholder="Логин администратора"
-            class:error={fieldErrors.login}
-          />
-        </div>
-        
-        <div class="form-group">
-          <label for="router-password">
-            <span class="label-icon">🔐</span>
-            Пароль
-          </label>
-          <input 
-            id="router-password"
-            type="password" 
-            bind:value={routerConfig.password}
-            on:input={() => clearFieldError('password')}
-            placeholder="Пароль администратора"
-            class:error={fieldErrors.password}
-          />
-        </div>
-      </div>
-    </div>
+    <FormSection>
+      <RouterAccessSection 
+        bind:routerConfig={routerConfig}
+        bind:fieldErrors={fieldErrors}
+      />
+    </FormSection>
 
-    <div class="form-section">
-      <h3>🔒 Настройка AWG</h3>
+    <FormSection title="Настройка AWG" icon="🔒">
       
       <div class="form-group">
         <label for="connection-name">
@@ -201,7 +147,7 @@
           </div>
         {/if}
       </div>
-    </div>
+    </FormSection>
     
     <div class="button-group">
       <button type="submit" class="btn primary pulse" disabled={isProcessing}>
@@ -366,14 +312,6 @@
     border-radius: 4px;
     font-family: 'Monaco', 'Menlo', monospace;
     font-size: 0.9em;
-  }
-
-  .form-section {
-    margin-bottom: 25px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 15px;
-    border: 1px solid rgba(42, 82, 152, 0.1);
   }
 
   .form-row {

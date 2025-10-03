@@ -9,12 +9,19 @@ export interface AWGConfig {
   filePath: string;
 }
 
-export type ViewType = 'welcome' | 'create-awg' | 'progress' | 'success' | 'error';
+export interface RouteConfig {
+  interfaceId: string;
+  batFiles: string[];
+  batUrls: string[];
+}
+
+export type ViewType = 'welcome' | 'create-awg' | 'add-routes' | 'progress' | 'success' | 'error';
 
 export interface AppState {
   currentView: ViewType;
   routerConfig: RouterConfig;
   awgConfig: AWGConfig;
+  routeConfig: RouteConfig;
   progressMessage: string;
   errorMessage: string;
   successMessage: string;
@@ -30,4 +37,10 @@ export const DEFAULT_ROUTER_CONFIG: RouterConfig = {
 export const DEFAULT_AWG_CONFIG: AWGConfig = {
   name: '',
   filePath: ''
+};
+
+export const DEFAULT_ROUTE_CONFIG: RouteConfig = {
+  interfaceId: '',
+  batFiles: [],
+  batUrls: []
 };

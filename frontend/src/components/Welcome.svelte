@@ -4,6 +4,7 @@
   
   const dispatch = createEventDispatcher<{
     'create-awg': void;
+    'add-routes': void;
     'quit': void;
   }>();
 
@@ -33,6 +34,11 @@
     <button class="btn primary network-btn" on:click={() => dispatch('create-awg')}>
       <span class="btn-icon">🔗</span>
       Создать AWG соединение
+      <div class="btn-glow"></div>
+    </button>
+    <button class="btn primary route-btn" on:click={() => dispatch('add-routes')}>
+      <span class="btn-icon">🛣️</span>
+      Управление маршрутами
       <div class="btn-glow"></div>
     </button>
     <button class="btn secondary" on:click={() => dispatch('quit')}>
@@ -118,6 +124,11 @@
     position: relative;
   }
 
+  .route-btn {
+    position: relative;
+    background: linear-gradient(135deg, #059669, #10b981);
+  }
+
   .btn-glow {
     position: absolute;
     top: 0;
@@ -129,6 +140,10 @@
   }
 
   .network-btn:hover .btn-glow {
+    left: 100%;
+  }
+
+  .route-btn:hover .btn-glow {
     left: 100%;
   }
 

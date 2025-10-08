@@ -10,7 +10,7 @@ export function ConfigureAWGInterface(arg1:main.AWGConfig,arg2:string):Promise<v
 
 export function CreateAWGInterface(arg1:main.AWGConfig):Promise<string>;
 
-export function DeleteRoutes(arg1:string):Promise<void>;
+export function DeleteRoutes(arg1:string):Promise<main.DeleteRoutesResult>;
 
 export function GetRouterWebURL(arg1:string,arg2:string):Promise<string>;
 

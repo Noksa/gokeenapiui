@@ -14,6 +14,20 @@ export namespace main {
 	        this.filePath = source["filePath"];
 	    }
 	}
+	export class DeleteRoutesResult {
+	    routesDeleted: number;
+	    message: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new DeleteRoutesResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.routesDeleted = source["routesDeleted"];
+	        this.message = source["message"];
+	    }
+	}
 	export class RouteConfig {
 	    interfaceId: string;
 	    batFiles: string[];

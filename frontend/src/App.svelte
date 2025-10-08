@@ -9,6 +9,7 @@
     AddRoutes,
     DeleteRoutes
   } from '../wailsjs/go/main/App.js';
+  import { main } from '../wailsjs/go/models';
   import { BrowserOpenURL, Quit } from '../wailsjs/runtime';
   
   import Welcome from './components/Welcome.svelte';
@@ -248,12 +249,12 @@
       appState = setProgress(appState, 'Удаляем маршруты...');
       
       // Delete routes using the new function
-      await DeleteRoutes(appState.routeConfig.interfaceId);
+      const result: main.DeleteRoutesResult = await DeleteRoutes(appState.routeConfig.interfaceId);
       
       // Success
       appState = setSuccess(
         appState, 
-        `Маршруты успешно удалены для интерфейса "${appState.routeConfig.interfaceId}"!`
+        result.message
       );
       
     } catch (error) {

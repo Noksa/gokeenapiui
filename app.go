@@ -51,6 +51,12 @@ type ProgressUpdate struct {
 	Total   int    `json:"total"`
 }
 
+// DeleteRoutesResult represents the result of route deletion
+type DeleteRoutesResult struct {
+	RoutesDeleted int    `json:"routesDeleted"`
+	Message       string `json:"message"`
+}
+
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
@@ -98,13 +104,29 @@ func (a *App) OpenBatFileDialog() (string, error) {
 	return selection, err
 }
 
-func (a *App) DeleteRoutes(interfaceId string) error {
+func (a *App) DeleteRoutes(interfaceId string) (DeleteRoutesResult, error) {
 	routes, err := gokeenrestapi.Ip.GetAllUserRoutesRciIpRoute(interfaceId)
 	if err != nil {
-		return err
+		return DeleteRoutesResult{}, err
 	}
+
+	routesCount := len(routes)
+	if routesCount == 0 {
+		return DeleteRoutesResult{
+			RoutesDeleted: 0,
+			Message:       fmt.Sprintf("Маршруты для интерфейса \"%s\" не найдены, удаление не требуется", interfaceId),
+		}, nil
+	}
+
 	err = gokeenrestapi.Ip.DeleteRoutes(routes, interfaceId)
-	return err
+	if err != nil {
+		return DeleteRoutesResult{}, err
+	}
+
+	return DeleteRoutesResult{
+		RoutesDeleted: routesCount,
+		Message:       fmt.Sprintf("Маршруты успешно удалены для интерфейса \"%s\" (удалено: %d)", interfaceId, routesCount),
+	}, nil
 }
 
 func (a *App) AddRoutes(interfaceId string, batFiles []string, batUrls []string) error {

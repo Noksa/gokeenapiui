@@ -196,11 +196,14 @@ func (a *App) ValidateAWGConfig(routerConfig RouterConfig, awgConfig AWGConfig) 
 		return err
 	}
 
-	// Authenticate
-	if err := gokeenrestapi.Common.Auth(); err != nil {
-		return fmt.Errorf("ошибка авторизации: %w", err)
+	// Check WireGuard Component
+	installed, err := gokeenrestapi.Checks.CheckComponentInstalled("wireguard")
+	if err != nil {
+		return err
 	}
-
+	if installed == "" {
+		return fmt.Errorf("на роутере не установлен компонент 'WireGuard VPN'. Установите его и повторите попытку")
+	}
 	// Check AWG interface from config file
 	if err := gokeenrestapi.Checks.CheckAWGInterfaceExistsFromConfFile(awgConfig.FilePath); err != nil {
 		return fmt.Errorf("ошибка чтения conf файла: %w", err)

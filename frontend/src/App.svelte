@@ -162,7 +162,7 @@
       const interfaceName = await CreateAWGInterface(appState.awgConfig);
       setTimeout(() => {
             // nothing
-        }, 1000);
+        }, 1500);
       appState = setProgress(appState, 'Настраиваем соединение...');
       
       // Configure AWG interface
